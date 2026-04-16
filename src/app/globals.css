@@ -1,9 +1,5 @@
 @import "tailwindcss";
 
-@theme inline {
-  --font-jetbrains: var(--font-jetbrains);
-}
-
 * {
   box-sizing: border-box;
 }
@@ -11,4 +7,5 @@
 body {
   background: #ffffff;
   color: #000000;
+  font-family: var(--font-jetbrains), monospace;
 }

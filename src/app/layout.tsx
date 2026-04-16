@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
+const jetbrainsMono = localFont({
+  src: "../../public/fonts/JetBrainsMono.ttf",
   variable: "--font-jetbrains",
-  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -26,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${jetbrainsMono.variable} h-full`}>
-      <body className="min-h-full flex flex-col font-[var(--font-jetbrains)] bg-white text-black">
+      <body className="min-h-full flex flex-col bg-white text-black" style={{ fontFamily: "var(--font-jetbrains), monospace" }}>
         {children}
       </body>
     </html>
