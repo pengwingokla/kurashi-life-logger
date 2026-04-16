@@ -26,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${jetbrainsMono.variable} h-full`}>
-      <body className="min-h-full flex flex-col bg-white text-black" style={{ fontFamily: "var(--font-jetbrains), monospace" }}>
+      <body className="min-h-full flex flex-col" style={{ fontFamily: "var(--font-jetbrains), monospace" }}>
         {children}
       </body>
     </html>
