@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { MatchaLog, MatchaCollection } from '@/lib/supabase'
+import { formatTimeET24h, etTimeToUTC } from '@/lib/time'
 
 const GRAM_PRESETS = [2, 3, 4]
 
@@ -17,6 +18,7 @@ export default function LogActions({ log, collection, date }: Props) {
   const [editing, setEditing] = useState(false)
   const [grams, setGrams] = useState<number>(log.grams)
   const [matchaId, setMatchaId] = useState<string | null>(log.matcha_id)
+  const [time, setTime] = useState<string>(formatTimeET24h(log.logged_at))
   const [saving, setSaving] = useState(false)
 
   async function handleDelete() {
@@ -30,7 +32,7 @@ export default function LogActions({ log, collection, date }: Props) {
     await fetch(`/api/logs/${log.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ grams, matcha_id: matchaId }),
+      body: JSON.stringify({ grams, matcha_id: matchaId, logged_at: etTimeToUTC(date, time) }),
     })
     setSaving(false)
     setEditing(false)
@@ -78,6 +80,16 @@ export default function LogActions({ log, collection, date }: Props) {
               className="flex-1 border-2 border-black rounded-xl px-2 py-2 text-center outline-none text-base"
             />
           </div>
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <p className="t-label">Time (ET)</p>
+          <input
+            type="time"
+            value={time}
+            onChange={(e) => setTime(e.target.value)}
+            className="border-2 border-black rounded-xl px-3 py-2 text-base outline-none focus:shadow-[2px_2px_0px_#000] transition-shadow"
+          />
         </div>
 
         <div className="flex gap-2">
