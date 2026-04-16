@@ -46,7 +46,7 @@ function formatXLabel(dateKey: string, days: number): string {
 }
 
 export default function MatchaAreaChart({ logs }: Props) {
-  const [rangeIdx, setRangeIdx] = useState(0)
+  const [rangeIdx, setRangeIdx] = useState(1)
   const { days } = RANGES[rangeIdx]
 
   const data = useMemo(() => buildDailyData(logs, days), [logs, days])
