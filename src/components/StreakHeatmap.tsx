@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation'
 
 type Props = {
   logs: { logged_at: string }[]
+  selectedDate?: string
+  onDayClick?: (date: string) => void
 }
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -37,7 +39,7 @@ function buildWeeks(): (Date | null)[][] {
   return weeks
 }
 
-export default function StreakHeatmap({ logs }: Props) {
+export default function StreakHeatmap({ logs, selectedDate, onDayClick }: Props) {
   const router = useRouter()
   const weeks = buildWeeks()
   const loggedDays = new Set(logs.map((l) => toETDateKey(new Date(l.logged_at))))
@@ -88,7 +90,7 @@ export default function StreakHeatmap({ logs }: Props) {
               return (
                 <button
                   key={key}
-                  onClick={() => router.push(`/day/${key}`)}
+                  onClick={() => onDayClick ? onDayClick(key) : router.push(`/day/${key}`)}
                   title={new Date(`${key}T12:00:00`).toLocaleDateString('en-US', {
                     weekday: 'short', month: 'short', day: 'numeric',
                   })}
@@ -96,7 +98,9 @@ export default function StreakHeatmap({ logs }: Props) {
                     hasLog
                       ? 'bg-black border-black'
                       : 'bg-white border-gray-300 hover:border-black'
-                  } ${isToday ? 'ring-2 ring-black ring-offset-1' : ''}`}
+                  } ${isToday ? 'ring-2 ring-black ring-offset-1' : ''} ${
+                    selectedDate === key && !isToday ? 'ring-2 ring-black ring-offset-1' : ''
+                  }`}
                 />
               )
             })}
