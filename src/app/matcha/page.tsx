@@ -6,7 +6,7 @@ import TopBar from '@/components/TopBar'
 
 export default async function MatchaPage() {
   const from = new Date()
-  from.setDate(from.getDate() - 84)
+  from.setDate(from.getDate() - 90)
 
   const [{ data: logsData }, { data: collectionData }] = await Promise.all([
     supabase
