@@ -33,7 +33,7 @@ function toETDateKey(date: Date) {
 
 function buildWeeks(): (Date | null)[][] {
   const today = new Date()
-  today.setHours(0, 0, 0, 0)
+  today.setHours(12, 0, 0, 0) // noon avoids midnight-crossing timezone issues
   const todayDow = today.getDay() // 0 = Sunday
 
   // Sunday that starts the earliest of our 12 weeks
