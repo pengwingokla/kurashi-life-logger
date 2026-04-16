@@ -105,7 +105,8 @@ export default function MatchaDashboard({ logs, collection }: Props) {
         <select
           value={selectedMatchaId ?? ''}
           onChange={(e) => setSelectedMatchaId(e.target.value || null)}
-          className="border-2 border-black rounded-xl px-3 py-2 text-sm outline-none shadow-[2px_2px_0px_#1a1008] bg-transparent"
+          className="border-2 border-black rounded-xl pl-3 pr-8 py-2 text-sm outline-none shadow-[2px_2px_0px_#1a1008] bg-transparent appearance-none w-full"
+          style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'8\' viewBox=\'0 0 12 8\'%3E%3Cpath d=\'M1 1l5 5 5-5\' stroke=\'%231a1008\' stroke-width=\'2\' fill=\'none\' stroke-linecap=\'round\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center' }}
         >
           {collection.map((m) => (
             <option key={m.id} value={m.id}>
@@ -185,7 +186,7 @@ export default function MatchaDashboard({ logs, collection }: Props) {
                   )}
                 </div>
                 <div className="text-right">
-                  <p className="text-xl font-bold">{log.grams}g</p>
+                  <p className="t-h2 font-bold">{log.grams}g</p>
                   <p className="t-body">{formatTimeET(log.logged_at)}</p>
                 </div>
               </div>

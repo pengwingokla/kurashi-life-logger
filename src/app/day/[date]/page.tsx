@@ -41,7 +41,7 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
 
         {logs.length === 0 ? (
           <div className="border-2 border-black rounded-2xl p-6 shadow-[4px_4px_0px_#000] text-center">
-            <p className="text-gray-400 text-lg">No matcha logged this day.</p>
+            <p className="t-body">No matcha logged this day.</p>
           </div>
         ) : (
           <>
@@ -73,7 +73,7 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
                       )}
                     </div>
                     <div className="text-right">
-                      <p className="text-xl font-bold">{log.grams}g</p>
+                      <p className="t-h2 font-bold">{log.grams}g</p>
                       <p className="t-body">{formatTimeET(log.logged_at)}</p>
                     </div>
                   </div>

@@ -41,11 +41,11 @@ export default function LogActions({ log, collection, date }: Props) {
     return (
       <div className="mt-3 flex flex-col gap-3 pt-3 border-t-2 border-black">
         <div className="flex flex-col gap-1">
-          <p className="text-xs uppercase tracking-widest text-gray-400">Matcha</p>
+          <p className="t-label">Matcha</p>
           <select
             value={matchaId ?? ''}
             onChange={(e) => setMatchaId(e.target.value || null)}
-            className="border-2 border-black rounded-xl px-3 py-2 text-base outline-none bg-white"
+            className="border-2 border-black rounded-xl px-3 py-2 text-base outline-none"
           >
             {collection.map((m) => (
               <option key={m.id} value={m.id}>{m.name}</option>
@@ -54,7 +54,7 @@ export default function LogActions({ log, collection, date }: Props) {
         </div>
 
         <div className="flex flex-col gap-1">
-          <p className="text-xs uppercase tracking-widest text-gray-400">Grams</p>
+          <p className="t-label">Grams</p>
           <div className="flex gap-2">
             {GRAM_PRESETS.map((g) => (
               <button
@@ -63,7 +63,7 @@ export default function LogActions({ log, collection, date }: Props) {
                 className={`flex-1 py-2 rounded-full border-2 border-black font-bold transition-all ${
                   grams === g
                     ? 'bg-black text-white'
-                    : 'bg-white shadow-[2px_2px_0px_#000] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5'
+                    : 'shadow-[2px_2px_0px_#1a1008] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5'
                 }`}
               >
                 {g}g

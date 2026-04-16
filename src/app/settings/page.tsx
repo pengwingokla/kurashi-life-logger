@@ -61,9 +61,9 @@ export default function SettingsPage() {
 
         {/* iOS Shortcut */}
         <div className="washi-card p-4 flex flex-col gap-3">
-          <p className="text-xs uppercase tracking-widest text-gray-400">iOS Shortcut</p>
-          <p className="text-base text-gray-600">Log matcha in one tap from your home screen.</p>
-          <ol className="text-sm text-gray-600 list-decimal list-inside flex flex-col gap-1">
+          <p className="t-label">iOS Shortcut</p>
+          <p className="t-body">Log matcha in one tap from your home screen.</p>
+          <ol className="t-body list-decimal list-inside flex flex-col gap-1">
             <li>Open the Shortcuts app on iPhone</li>
             <li>Tap <strong>+</strong> → Add Action → <strong>Get Contents of URL</strong></li>
             <li>Set Method to <strong>POST</strong>, Body: <strong>JSON</strong></li>
@@ -77,7 +77,7 @@ export default function SettingsPage() {
 
         {/* My Matchas */}
         <div className="washi-card p-4 flex flex-col gap-3">
-          <p className="text-xs uppercase tracking-widest text-gray-400">My Matchas</p>
+          <p className="t-label">My Matchas</p>
           <div className="flex flex-col gap-2">
             {collection.map((m) => (
               <div
@@ -85,8 +85,8 @@ export default function SettingsPage() {
                 className="flex justify-between items-center border-2 border-black rounded-xl px-4 py-3 shadow-[2px_2px_0px_#000]"
               >
                 <div>
-                  <p className="text-lg font-semibold">{m.name}</p>
-                  {m.brand && <p className="text-sm text-gray-400">{m.brand}</p>}
+                  <p className="t-h2">{m.name}</p>
+                  {m.brand && <p className="t-body">{m.brand}</p>}
                 </div>
                 <span className="text-sm text-gray-400 capitalize border border-gray-300 rounded-full px-2 py-0.5">{m.grade}</span>
               </div>
@@ -95,7 +95,7 @@ export default function SettingsPage() {
 
           {/* Add form */}
           <div className="flex flex-col gap-2 pt-3 border-t-2 border-black">
-            <p className="text-xs uppercase tracking-widest text-gray-400">Add matcha</p>
+            <p className="t-label">Add matcha</p>
             <input
               type="text"
               value={name}

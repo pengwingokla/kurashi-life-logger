@@ -20,6 +20,7 @@ body {
   font-size: 1.75rem;   /* 28px */
   font-weight: 700;
   line-height: 1.2;
+  color: #1a1008;
 }
 
 /* Card / section title, item name */
@@ -27,6 +28,7 @@ body {
   font-size: 1rem;      /* 16px */
   font-weight: 600;
   line-height: 1.3;
+  color: #1a1008;
 }
 
 /* Tiny uppercase label (TODAY, STREAK, LOG FOR TODAY …) */
@@ -43,6 +45,7 @@ body {
   font-size: 2.5rem;    /* 40px */
   font-weight: 700;
   line-height: 1;
+  color: #1a1008;
 }
 
 /* Secondary / supporting body copy */
