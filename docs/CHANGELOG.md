@@ -1,47 +1,65 @@
 # Changelog
 
-All notable changes to this project will be documented here.
-Format: `## [version or milestone] — YYYY-MM-DD`
+## Unreleased
 
 ---
 
-## [MVP] — 2026-04-16
+## [0.3.0] — 2026-04-16 — UX polish & design system
 
 ### Added
-- **Dashboard home screen** — module card grid; Matcha Log is the first module
-- **Matcha Log module** at `/matcha` — heatmap, Today/Streak stats, inline log form, day log list
-- **Streak heatmap** — 12 weeks, Sunday-aligned columns, Mon/Wed/Fri row labels, click to switch selected day in place (no navigation)
-- **Inline log form** — matcha dropdown, gram presets (2g/3g/4g/Other), Confirm button; logs for selected date
-- **Edit/Delete per log entry** — inline expand with matcha selector and gram picker
-- **Settings page** — manage matcha collection, add new matcha, iOS Shortcut setup instructions
-- **Natural language logging** — Claude AI parses free text (e.g. "3g of Ippodo just now") via `/api/parse`
-- **iOS Shortcut webhook** — `/api/shortcut` accepts `text` or `matcha_name` + `grams` for one-tap logging from iPhone
-- **PWA** — installable on iPhone home screen via `manifest.json`
-- **Washi paper background** — real paper photo as repeating CSS texture; all cards transparent
-- **JetBrains Mono** — self-hosted via `next/font/local`
-- **Doodle design system** — thick black borders, offset box shadows, pill buttons with press effect, monochrome
-- **Typography scale** — `t-h1` / `t-h2` / `t-stat` / `t-label` / `t-body` defined in `globals.css` with size, weight, and color; applied across all screens
-- **`TopBar` component** — reusable nav bar with centered title and left/right slots
-- **Gear icon** in nav bar (`setting-2.svg`) linking to Settings
-- **Eastern Time** as single source of truth for all date/time (`src/lib/time.ts`)
+- Dashboard home screen at `/` with module card grid
+- Matcha Log moved to `/matcha` as a module; clicking the card navigates into it
+- `TopBar` reusable component — centered title, left/right slots, border-bottom separator
+- Doodle gear icon (`setting-2.svg`) replacing "Settings" text in nav bar
+- Heatmap cells clickable to switch the log list in place — no separate day page
+- Mon / Wed / Fri row labels on heatmap; weeks now start on Sunday
+- Inline log form on Matcha page — matcha dropdown, gram presets, Confirm button
+- Log for any selected date (past days logged at noon ET)
+- Typography scale in `globals.css`: `t-h1`, `t-h2`, `t-stat`, `t-label`, `t-body` — each with size, weight, and color; applied across all screens
+- `washi-card` CSS class for transparent cards showing Washi paper texture through
 
-### Technical
-- Next.js App Router with TypeScript and Tailwind v4
-- Supabase (Postgres) for storage; all queries server-side where possible
-- Vercel deployment from `main` branch
-- `MatchaDashboard` client component handles heatmap interaction and log form state
-- `LogActions` colocated in `src/app/matcha/`
+### Changed
+- Settings link replaced with gear icon
+- Log form matcha selector changed from stacked buttons to a dropdown
+- Gram preset and Confirm buttons made more compact
 
 ### Removed
-- Separate `/log` page — logging is now inline on the Matcha Log screen
+- Separate `/log` page — logging is now inline on Matcha Log
 - `/day/[date]` route — day detail is now inline via heatmap click
+- `LogActions` moved from `src/app/day/[date]/` to `src/app/matcha/`
 
 ---
 
-## [Scaffold] — 2026-02-01
+## [0.2.0] — 2026-04-16 — Visual design
 
 ### Added
-- Project scaffolded (Next.js, TypeScript, Tailwind, App Router)
-- Supabase and Anthropic SDK installed
-- Dev docs created (decisions, scope, changelog, status)
-- Portfolio entry written (problem, product definition, UX decisions)
+- Washi paper photo (`public/textures/washi.jpg`) as repeating CSS background
+- JetBrains Mono self-hosted via `next/font/local` with `public/fonts/JetBrainsMono.ttf`
+- Doodle design system — thick black borders (`border-2 border-black`), offset box shadows (`shadow-[4px_4px_0px_#1a1008]`), pill buttons with hover press effect
+- Monochrome color scheme — black/white accents, no green
+
+### Changed
+- Cards set to `background-color: transparent` to show Washi texture through them
+- `bg-white` removed from `<body>` in `layout.tsx` which was blocking the texture
+- Font switched from Caveat → JetBrains Mono
+
+### Fixed
+- Accidentally committed font package folder — removed from git, added to `.gitignore`
+
+---
+
+## [0.1.0] — 2026-04-15 — Initial build
+
+### Added
+- Supabase schema: `matcha_collection` and `matcha_logs` tables
+- API routes: `/api/collection`, `/api/logs`, `/api/logs/[id]`, `/api/parse`, `/api/shortcut`
+- Home screen with GitHub-style streak heatmap (12 weeks), Today and Streak stat cards
+- Log Matcha screen — AI text input (`/api/parse` → Claude) + manual matcha/gram selector
+- Day detail screen — log list with Edit and Delete per entry
+- Settings screen — matcha collection manager + iOS Shortcut setup instructions
+- Natural language parsing via Claude (`claude-sonnet-4-5`) — auto-logs after parsing
+- iOS Shortcut webhook — accepts `text` or `matcha_name` + `grams`
+- Eastern Time as single timezone source of truth (`src/lib/time.ts`)
+- Edit and delete log entries with inline form
+- Month labels on heatmap
+- PWA manifest for iPhone home screen install
