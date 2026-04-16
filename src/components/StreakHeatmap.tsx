@@ -72,7 +72,7 @@ export default function StreakHeatmap({ logs, selectedDate, onDayClick }: Props)
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex gap-1">
+      <div className="flex gap-2 items-start">
         {/* Day label column — same h-4 + gap-1 rhythm as grid rows */}
         <div className="flex flex-col gap-1">
           {/* Spacer matching month-label row */}
@@ -129,22 +129,22 @@ export default function StreakHeatmap({ logs, selectedDate, onDayClick }: Props)
             </div>
           ))}
         </div>
-      </div>
 
-      {/* Legend */}
-      <div className="flex items-center gap-1.5 self-end">
-        <span className="text-[9px] text-gray-500">Less</span>
-        {[0, 1, 2, 3, 4].map((level) => (
-          <div
-            key={level}
-            className="w-3 h-3 rounded-sm border"
-            style={level > 0
-              ? { backgroundColor: SHADES[level], borderColor: 'transparent' }
-              : { backgroundColor: 'transparent', borderColor: '#c4bfbc' }
-            }
-          />
-        ))}
-        <span className="text-[9px] text-gray-500">More</span>
+        {/* Vertical legend to the right */}
+        <div className="flex flex-col items-center gap-1 pt-5">
+          <span className="text-[9px] text-gray-500">More</span>
+          {[4, 3, 2, 1, 0].map((level) => (
+            <div
+              key={level}
+              className="w-3 h-3 rounded-sm border"
+              style={level > 0
+                ? { backgroundColor: SHADES[level], borderColor: 'transparent' }
+                : { backgroundColor: 'transparent', borderColor: '#c4bfbc' }
+              }
+            />
+          ))}
+          <span className="text-[9px] text-gray-500">Less</span>
+        </div>
       </div>
     </div>
   )

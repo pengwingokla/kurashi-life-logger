@@ -46,49 +46,38 @@ export default function TimeOfDayHeatmap({ logs }: Props) {
 
   const max = Math.max(...hourCounts, 1)
 
-  // 1px lines with 5.5px gap ≈ 156px total to align with StreakHeatmap height
-  const LINE_H = 1
-  const LINE_GAP = 5.5
-  const totalH = 24 * LINE_H + 23 * LINE_GAP
-
   return (
-    <div className="flex flex-col gap-1 shrink-0">
-      {/* Spacer matching month-label row in StreakHeatmap */}
-      <div className="h-4 flex items-center">
-        <span className="text-[9px] text-gray-500 leading-none">hr</span>
+    <div className="flex flex-col gap-1">
+      {/* 24 vertical bars side by side */}
+      <div className="flex gap-0.5 items-end">
+        {hourCounts.map((count, hour) => {
+          const intensity = getIntensity(count, max)
+          return (
+            <div
+              key={hour}
+              title={`${String(hour).padStart(2, '0')}:00 — ${count} log${count !== 1 ? 's' : ''}`}
+              className="flex-1 rounded-sm"
+              style={{
+                height: '24px',
+                width: '4px',
+                backgroundColor: intensity > 0 ? SHADES[intensity] : '#e5e2e0',
+              }}
+            />
+          )
+        })}
       </div>
 
-      <div className="flex gap-1.5 items-start">
-        {/* 24 lines */}
-        <div className="flex flex-col" style={{ gap: `${LINE_GAP}px` }}>
-          {hourCounts.map((count, hour) => {
-            const intensity = getIntensity(count, max)
-            return (
-              <div
-                key={hour}
-                title={`${String(hour).padStart(2, '0')}:00 — ${count} log${count !== 1 ? 's' : ''}`}
-                className="w-5"
-                style={{
-                  height: `${LINE_H}px`,
-                  backgroundColor: intensity > 0 ? SHADES[intensity] : '#e5e2e0',
-                }}
-              />
-            )
-          })}
-        </div>
-
-        {/* Hour labels at 00, 06, 12, 18 */}
-        <div className="relative shrink-0" style={{ height: totalH }}>
-          {Object.entries(HOUR_LABELS).map(([h, label]) => (
-            <span
-              key={h}
-              className="absolute text-[9px] text-gray-500 leading-none"
-              style={{ top: parseInt(h) * (LINE_H + LINE_GAP) - 3 }}
-            >
-              {label}
-            </span>
-          ))}
-        </div>
+      {/* Hour labels at 00, 06, 12, 18 */}
+      <div className="relative h-3">
+        {Object.entries(HOUR_LABELS).map(([h, label]) => (
+          <span
+            key={h}
+            className="absolute text-[9px] text-gray-500 leading-none"
+            style={{ left: `${(parseInt(h) / 24) * 100}%` }}
+          >
+            {label}
+          </span>
+        ))}
       </div>
     </div>
   )
