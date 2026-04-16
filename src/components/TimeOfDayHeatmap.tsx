@@ -46,26 +46,20 @@ export default function TimeOfDayHeatmap({ logs }: Props) {
 
   const max = Math.max(...hourCounts, 1)
 
+  // Build a smooth gradient — one color stop per hour at its midpoint
+  const colorStops = hourCounts.map((count, hour) => {
+    const intensity = getIntensity(count, max)
+    const color = intensity > 0 ? SHADES[intensity] : '#e5e2e0'
+    const pct = ((hour + 0.5) / 24 * 100).toFixed(2)
+    return `${color} ${pct}%`
+  }).join(', ')
+
   return (
     <div className="flex flex-col gap-1">
-      {/* 24 vertical bars side by side */}
-      <div className="flex gap-0.5 items-end">
-        {hourCounts.map((count, hour) => {
-          const intensity = getIntensity(count, max)
-          return (
-            <div
-              key={hour}
-              title={`${String(hour).padStart(2, '0')}:00 — ${count} log${count !== 1 ? 's' : ''}`}
-              className="flex-1 rounded-sm"
-              style={{
-                height: '24px',
-                width: '4px',
-                backgroundColor: intensity > 0 ? SHADES[intensity] : '#e5e2e0',
-              }}
-            />
-          )
-        })}
-      </div>
+      <div
+        className="w-full rounded-sm"
+        style={{ height: '8px', background: `linear-gradient(to right, ${colorStops})` }}
+      />
 
       {/* Hour labels at 00, 06, 12, 18 */}
       <div className="relative h-3">
