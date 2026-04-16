@@ -3,9 +3,10 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import StreakHeatmap from '@/components/StreakHeatmap'
+import MatchaAreaChart from '@/components/MatchaAreaChart'
 import LogActions from './LogActions'
 import { MatchaLog, MatchaCollection } from '@/lib/supabase'
-import { toETDateKey, todayET, formatTimeET, formatDateLabel } from '@/lib/time'
+import { toETDateKey, todayET, formatTimeET, formatDateLabel, etTimeToUTC } from '@/lib/time'
 
 const GRAM_PRESETS = [2, 3, 4]
 
@@ -55,7 +56,7 @@ export default function MatchaDashboard({ logs, collection }: Props) {
     try {
       const logged_at = isToday
         ? new Date().toISOString()
-        : new Date(`${selectedDate}T12:00:00-05:00`).toISOString()
+        : etTimeToUTC(selectedDate, '12:00')
       const res = await fetch('/api/logs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -95,6 +96,9 @@ export default function MatchaDashboard({ logs, collection }: Props) {
           </p>
         </div>
       </div>
+
+      {/* Area chart */}
+      <MatchaAreaChart logs={logs} />
 
       {/* Inline log form */}
       <div className="washi-card p-4 flex flex-col gap-3">
