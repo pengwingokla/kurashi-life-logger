@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import StreakHeatmap from '@/components/StreakHeatmap'
-import LogActions from '@/app/day/[date]/LogActions'
+import LogActions from './LogActions'
 import { MatchaLog, MatchaCollection } from '@/lib/supabase'
 import { toETDateKey, todayET, formatTimeET, formatDateLabel } from '@/lib/time'
 
