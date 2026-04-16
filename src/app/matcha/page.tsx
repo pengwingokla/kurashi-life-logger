@@ -43,20 +43,18 @@ export default async function MatchaPage() {
     <main className="min-h-screen text-[#1a1008] font-[var(--font-jetbrains)]">
       <div className="max-w-md mx-auto px-4 py-8 flex flex-col gap-6">
 
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link
-              href="/"
-              className="text-sm border-2 border-black rounded-full px-3 py-1 hover:bg-black hover:text-white transition-colors"
-            >
-              ← Home
-            </Link>
-            <h1 className="text-3xl font-bold">Matcha Log</h1>
-          </div>
+        {/* Nav bar */}
+        <div className="flex items-center justify-between border-b-2 border-black pb-3">
+          <Link
+            href="/"
+            className="flex items-center gap-1 text-sm text-gray-500 hover:text-black transition-colors"
+          >
+            ‹ Home
+          </Link>
+          <h1 className="text-base font-bold tracking-wide">Matcha Log</h1>
           <Link
             href="/settings"
-            className="text-sm border-2 border-black rounded-full px-3 py-1 hover:bg-black hover:text-white transition-colors"
+            className="text-sm text-gray-500 hover:text-black transition-colors"
           >
             Settings
           </Link>
