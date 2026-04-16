@@ -26,7 +26,7 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
   const totalGrams = logs.reduce((sum, l) => sum + l.grams, 0)
 
   return (
-    <main className="min-h-screen bg-white text-black font-[var(--font-caveat)]">
+    <main className="min-h-screen bg-white text-black font-[var(--font-jetbrains)]">
       <div className="max-w-md mx-auto px-4 py-8 flex flex-col gap-6">
 
         <div className="flex items-center gap-3">

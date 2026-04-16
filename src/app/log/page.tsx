@@ -70,7 +70,7 @@ export default function LogPage() {
   }
 
   return (
-    <main className="min-h-screen bg-white text-black font-[var(--font-caveat)]">
+    <main className="min-h-screen bg-white text-black font-[var(--font-jetbrains)]">
       <div className="max-w-md mx-auto px-4 py-8 flex flex-col gap-6">
 
         {/* Header */}

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Caveat } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const caveat = Caveat({
+const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  variable: "--font-caveat",
-  weight: ["400", "500", "600", "700"],
+  variable: "--font-jetbrains",
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
@@ -25,8 +25,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${caveat.variable} h-full`}>
-      <body className="min-h-full flex flex-col font-caveat bg-white text-black">
+    <html lang="en" className={`${jetbrainsMono.variable} h-full`}>
+      <body className="min-h-full flex flex-col font-[var(--font-jetbrains)] bg-white text-black">
         {children}
       </body>
     </html>

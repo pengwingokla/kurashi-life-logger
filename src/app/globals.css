@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-caveat: var(--font-caveat);
+  --font-jetbrains: var(--font-jetbrains);
 }
 
 * {
