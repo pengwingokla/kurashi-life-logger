@@ -40,7 +40,7 @@ export default async function Home() {
   const todayGrams = todayLogs.reduce((sum, l) => sum + l.grams, 0)
 
   return (
-    <main className="min-h-screen bg-white text-black font-[var(--font-jetbrains)]">
+    <main className="min-h-screen text-[#1a1008] font-[var(--font-jetbrains)]">
       <div className="max-w-md mx-auto px-4 py-8 flex flex-col gap-6">
 
         {/* Header */}
@@ -55,13 +55,13 @@ export default async function Home() {
         </div>
 
         {/* Heatmap */}
-        <div className="border-2 border-black rounded-2xl p-4 shadow-[4px_4px_0px_#000] overflow-x-auto bg-white">
+        <div className="washi-card p-4 overflow-x-auto bg-white">
           <StreakHeatmap logs={logs} />
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="border-2 border-black rounded-2xl p-4 shadow-[4px_4px_0px_#000] bg-white">
+          <div className="washi-card p-4">
             <p className="text-xs uppercase tracking-widest text-gray-400">Today</p>
             <p className="text-4xl font-bold mt-1">
               {todayLogs.length}
@@ -73,7 +73,7 @@ export default async function Home() {
               <p className="text-sm text-gray-400 mt-1">{todayGrams}g total</p>
             )}
           </div>
-          <div className="border-2 border-black rounded-2xl p-4 shadow-[4px_4px_0px_#000] bg-white">
+          <div className="washi-card p-4">
             <p className="text-xs uppercase tracking-widest text-gray-400">Streak</p>
             <p className="text-4xl font-bold mt-1">
               {streak}
@@ -99,7 +99,7 @@ export default async function Home() {
             {todayLogs.map((log) => (
               <div
                 key={log.id}
-                className="border-2 border-black rounded-xl px-4 py-3 shadow-[3px_3px_0px_#000] bg-white flex justify-between items-center"
+                className="washi-card px-4 py-3 flex justify-between items-center"
               >
                 <div>
                   <p className="text-lg font-semibold">

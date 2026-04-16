@@ -26,7 +26,7 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
   const totalGrams = logs.reduce((sum, l) => sum + l.grams, 0)
 
   return (
-    <main className="min-h-screen bg-white text-black font-[var(--font-jetbrains)]">
+    <main className="min-h-screen text-[#1a1008] font-[var(--font-jetbrains)]">
       <div className="max-w-md mx-auto px-4 py-8 flex flex-col gap-6">
 
         <div className="flex items-center gap-3">
@@ -46,11 +46,11 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
         ) : (
           <>
             <div className="grid grid-cols-2 gap-4">
-              <div className="border-2 border-black rounded-2xl p-4 shadow-[4px_4px_0px_#000]">
+              <div className="washi-card p-4">
                 <p className="text-xs uppercase tracking-widest text-gray-400">Cups</p>
                 <p className="text-4xl font-bold mt-1">{logs.length}</p>
               </div>
-              <div className="border-2 border-black rounded-2xl p-4 shadow-[4px_4px_0px_#000]">
+              <div className="washi-card p-4">
                 <p className="text-xs uppercase tracking-widest text-gray-400">Total</p>
                 <p className="text-4xl font-bold mt-1">{totalGrams}g</p>
               </div>
@@ -60,7 +60,7 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
               {logs.map((log) => (
                 <div
                   key={log.id}
-                  className="border-2 border-black rounded-xl px-4 py-3 shadow-[3px_3px_0px_#000] bg-white"
+                  className="washi-card px-4 py-3"
                 >
                   <div className="flex justify-between items-start">
                     <div>

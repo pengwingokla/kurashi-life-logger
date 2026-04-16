@@ -43,7 +43,7 @@ export default function SettingsPage() {
     : '/api/shortcut'
 
   return (
-    <main className="min-h-screen bg-white text-black font-[var(--font-jetbrains)]">
+    <main className="min-h-screen text-[#1a1008] font-[var(--font-jetbrains)]">
       <div className="max-w-md mx-auto px-4 py-8 flex flex-col gap-6">
 
         {/* Header */}
@@ -58,7 +58,7 @@ export default function SettingsPage() {
         </div>
 
         {/* iOS Shortcut */}
-        <div className="border-2 border-black rounded-2xl p-4 shadow-[4px_4px_0px_#000] flex flex-col gap-3">
+        <div className="washi-card p-4 flex flex-col gap-3">
           <p className="text-xs uppercase tracking-widest text-gray-400">iOS Shortcut</p>
           <p className="text-base text-gray-600">Log matcha in one tap from your home screen.</p>
           <ol className="text-sm text-gray-600 list-decimal list-inside flex flex-col gap-1">
@@ -74,7 +74,7 @@ export default function SettingsPage() {
         </div>
 
         {/* My Matchas */}
-        <div className="border-2 border-black rounded-2xl p-4 shadow-[4px_4px_0px_#000] flex flex-col gap-3">
+        <div className="washi-card p-4 flex flex-col gap-3">
           <p className="text-xs uppercase tracking-widest text-gray-400">My Matchas</p>
           <div className="flex flex-col gap-2">
             {collection.map((m) => (
