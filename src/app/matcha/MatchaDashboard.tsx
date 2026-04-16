@@ -28,11 +28,12 @@ function calcStreak(logs: MatchaLog[]): number {
   return streak
 }
 
-export default function MatchaDashboard({ logs, collection }: Props) {
+export default function MatchaDashboard({ logs, collection: initialCollection }: Props) {
   const router = useRouter()
   const today = todayET()
   const [selectedDate, setSelectedDate] = useState(today)
 
+  const [collection, setCollection] = useState(initialCollection)
   const defaultMatcha = collection[0]?.id ?? null
   const [selectedMatchaId, setSelectedMatchaId] = useState<string | null>(defaultMatcha)
   const [grams, setGrams] = useState(3)
@@ -40,6 +41,37 @@ export default function MatchaDashboard({ logs, collection }: Props) {
   const [customGrams, setCustomGrams] = useState('')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+
+  // Add new matcha inline
+  const [addingMatcha, setAddingMatcha] = useState(false)
+  const [newName, setNewName] = useState('')
+  const [newBrand, setNewBrand] = useState('')
+  const [addingSaving, setAddingSaving] = useState(false)
+  const [addError, setAddError] = useState('')
+
+  async function handleAddMatcha() {
+    if (!newName.trim()) { setAddError('Name is required'); return }
+    setAddingSaving(true)
+    setAddError('')
+    try {
+      const res = await fetch('/api/collection', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newName.trim(), brand: newBrand.trim() || null, grade: 'ceremonial' }),
+      })
+      if (!res.ok) throw new Error()
+      const added = await res.json()
+      setCollection((prev) => [...prev, added])
+      setSelectedMatchaId(added.id)
+      setNewName('')
+      setNewBrand('')
+      setAddingMatcha(false)
+    } catch {
+      setAddError('Failed to add.')
+    } finally {
+      setAddingSaving(false)
+    }
+  }
 
   const isToday = selectedDate === today
   const selectedLogs = logs.filter((l) => toETDateKey(new Date(l.logged_at)) === selectedDate)
@@ -118,6 +150,49 @@ export default function MatchaDashboard({ logs, collection }: Props) {
             </option>
           ))}
         </select>
+
+        {!addingMatcha ? (
+          <button
+            onClick={() => setAddingMatcha(true)}
+            className="text-xs text-gray-400 hover:text-black transition-colors self-start"
+          >
+            + Add new matcha
+          </button>
+        ) : (
+          <div className="flex flex-col gap-2 pt-2 border-t border-gray-200">
+            <input
+              type="text"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              placeholder="Name (required)"
+              autoFocus
+              className="border-2 border-black rounded-xl px-3 py-1.5 text-sm outline-none focus:shadow-[2px_2px_0px_#000]"
+            />
+            <input
+              type="text"
+              value={newBrand}
+              onChange={(e) => setNewBrand(e.target.value)}
+              placeholder="Brand (optional)"
+              className="border-2 border-black rounded-xl px-3 py-1.5 text-sm outline-none focus:shadow-[2px_2px_0px_#000]"
+            />
+            {addError && <p className="text-red-500 text-xs">{addError}</p>}
+            <div className="flex gap-2">
+              <button
+                onClick={() => { setAddingMatcha(false); setNewName(''); setNewBrand(''); setAddError('') }}
+                className="flex-1 py-1 text-sm rounded-full border-2 border-black font-bold shadow-[2px_2px_0px_#1a1008] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAddMatcha}
+                disabled={addingSaving}
+                className="flex-1 py-1 text-sm rounded-full border-2 border-black font-bold bg-black text-white disabled:opacity-40 transition-all"
+              >
+                {addingSaving ? 'Adding...' : 'Add →'}
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="flex gap-1.5">
           {GRAM_PRESETS.map((g) => (
