@@ -39,7 +39,7 @@ export default function LogPage() {
         body: JSON.stringify({ text }),
       })
       if (!res.ok) throw new Error()
-      router.push('/')
+      router.push('/matcha')
       router.refresh()
     } catch {
       setError('Failed to parse. Try the quick-select below.')
@@ -60,7 +60,7 @@ export default function LogPage() {
         body: JSON.stringify({ matcha_id: selectedId, grams: finalGrams }),
       })
       if (!res.ok) throw new Error()
-      router.push('/')
+      router.push('/matcha')
       router.refresh()
     } catch {
       setError('Failed to save. Please try again.')
@@ -122,7 +122,7 @@ export default function LogPage() {
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-all text-left ${
                   selectedId === m.id
                     ? 'border-black bg-black text-white shadow-none'
-                    : 'border-black bg-white shadow-[2px_2px_0px_#000] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5'
+                    : 'border-black shadow-[2px_2px_0px_#1a1008] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5'
                 }`}
               >
                 <div>
@@ -145,7 +145,7 @@ export default function LogPage() {
                 className={`flex-1 py-3 rounded-full border-2 border-black font-bold text-lg transition-all ${
                   !useCustom && grams === g
                     ? 'bg-black text-white shadow-none'
-                    : 'bg-white shadow-[2px_2px_0px_#000] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5'
+                    : 'shadow-[2px_2px_0px_#1a1008] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5'
                 }`}
               >
                 {g}g
@@ -156,7 +156,7 @@ export default function LogPage() {
               className={`flex-1 py-3 rounded-full border-2 border-black font-bold text-lg transition-all ${
                 useCustom
                   ? 'bg-black text-white shadow-none'
-                  : 'bg-white shadow-[2px_2px_0px_#000] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5'
+                  : 'shadow-[2px_2px_0px_#1a1008] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5'
               }`}
             >
               Other

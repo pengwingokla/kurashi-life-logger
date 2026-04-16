@@ -31,7 +31,7 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
 
         <div className="flex items-center gap-3">
           <Link
-            href="/"
+            href="/matcha"
             className="border-2 border-black rounded-full px-3 py-1 text-sm hover:bg-black hover:text-white transition-colors"
           >
             ← Back
