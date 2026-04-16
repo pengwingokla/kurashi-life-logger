@@ -51,6 +51,7 @@ body {
 /* Secondary / supporting body copy */
 .t-body {
   font-size: 0.8125rem; /* 13px */
+  font-weight: 400;
   line-height: 1.5;
   color: #6b7280;       /* gray-500 */
 }
