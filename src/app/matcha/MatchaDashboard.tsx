@@ -107,9 +107,11 @@ export default function MatchaDashboard({ logs, collection: initialCollection }:
   return (
     <div className="flex flex-col gap-6">
       {/* Heatmap + Time of day */}
-      <div className="washi-card p-4 overflow-x-auto flex flex-col gap-3">
-        <StreakHeatmap logs={logs} selectedDate={selectedDate} onDayClick={setSelectedDate} />
-        <TimeOfDayHeatmap logs={logs} />
+      <div className="washi-card p-4 overflow-x-auto">
+        <div className="flex flex-col gap-3 w-fit mx-auto">
+          <StreakHeatmap logs={logs} selectedDate={selectedDate} onDayClick={setSelectedDate} />
+          <TimeOfDayHeatmap logs={logs} />
+        </div>
       </div>
 
       {/* Stats */}
