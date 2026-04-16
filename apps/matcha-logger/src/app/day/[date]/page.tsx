@@ -1,12 +1,18 @@
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { MatchaLog } from '@/lib/supabase'
+import { formatTimeET, formatDateLabel } from '@/lib/time'
+import LogActions from './LogActions'
 
 export default async function DayPage({ params }: { params: Promise<{ date: string }> }) {
   const { date } = await params
 
-  const from = new Date(`${date}T00:00:00`)
-  const to = new Date(`${date}T23:59:59`)
+  const from = new Date(`${date}T00:00:00-05:00`)
+  const to = new Date(`${date}T23:59:59-05:00`)
+
+  const { data: collectionData } = await supabase
+    .from('matcha_collection')
+    .select('id, name, brand, grade')
 
   const { data } = await supabase
     .from('matcha_logs')
@@ -16,13 +22,8 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
     .order('logged_at', { ascending: true })
 
   const logs = (data as MatchaLog[]) ?? []
+  const collection = collectionData ?? []
   const totalGrams = logs.reduce((sum, l) => sum + l.grams, 0)
-
-  const label = new Date(`${date}T12:00:00`).toLocaleDateString([], {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-  })
 
   return (
     <main className="min-h-screen bg-stone-50 dark:bg-stone-900 text-stone-900 dark:text-stone-100">
@@ -32,7 +33,7 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
           <Link href="/" className="text-stone-400 hover:text-stone-600 text-sm">
             ← Back
           </Link>
-          <h1 className="text-xl font-semibold">{label}</h1>
+          <h1 className="text-xl font-semibold">{formatDateLabel(date)}</h1>
         </div>
 
         {logs.length === 0 ? (
@@ -56,28 +57,26 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
               {logs.map((log) => (
                 <div
                   key={log.id}
-                  className="bg-white dark:bg-stone-800 rounded-xl px-4 py-3 shadow-sm flex justify-between items-center"
+                  className="bg-white dark:bg-stone-800 rounded-xl px-4 py-3 shadow-sm"
                 >
-                  <div>
-                    <p className="text-sm font-medium">
-                      {log.matcha_collection?.name ?? 'Unknown matcha'}
-                    </p>
-                    {log.matcha_collection?.brand && (
-                      <p className="text-xs text-stone-400">{log.matcha_collection.brand}</p>
-                    )}
-                    {log.notes && (
-                      <p className="text-xs text-stone-400 mt-0.5 italic">{log.notes}</p>
-                    )}
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="text-sm font-medium">
+                        {log.matcha_collection?.name ?? 'Unknown matcha'}
+                      </p>
+                      {log.matcha_collection?.brand && (
+                        <p className="text-xs text-stone-400">{log.matcha_collection.brand}</p>
+                      )}
+                      {log.notes && (
+                        <p className="text-xs text-stone-400 mt-0.5 italic">{log.notes}</p>
+                      )}
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-semibold">{log.grams}g</p>
+                      <p className="text-xs text-stone-400">{formatTimeET(log.logged_at)}</p>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-sm font-semibold">{log.grams}g</p>
-                    <p className="text-xs text-stone-400">
-                      {new Date(log.logged_at).toLocaleTimeString([], {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </p>
-                  </div>
+                  <LogActions log={log} collection={collection} date={date} />
                 </div>
               ))}
             </div>
