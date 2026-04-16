@@ -1,11 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import StreakHeatmap from '@/components/StreakHeatmap'
 import LogActions from '@/app/day/[date]/LogActions'
 import { MatchaLog, MatchaCollection } from '@/lib/supabase'
 import { toETDateKey, todayET, formatTimeET, formatDateLabel } from '@/lib/time'
+
+const GRAM_PRESETS = [2, 3, 4]
 
 type Props = {
   logs: MatchaLog[]
@@ -26,8 +28,18 @@ function calcStreak(logs: MatchaLog[]): number {
 }
 
 export default function MatchaDashboard({ logs, collection }: Props) {
+  const router = useRouter()
   const today = todayET()
   const [selectedDate, setSelectedDate] = useState(today)
+
+  // Log form state
+  const defaultMatcha = collection[0]?.id ?? null
+  const [selectedMatchaId, setSelectedMatchaId] = useState<string | null>(defaultMatcha)
+  const [grams, setGrams] = useState(3)
+  const [useCustom, setUseCustom] = useState(false)
+  const [customGrams, setCustomGrams] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
 
   const isToday = selectedDate === today
   const selectedLogs = logs.filter((l) => toETDateKey(new Date(l.logged_at)) === selectedDate)
@@ -35,9 +47,31 @@ export default function MatchaDashboard({ logs, collection }: Props) {
   const todayGrams = todayLogs.reduce((s, l) => s + l.grams, 0)
   const streak = calcStreak(logs)
 
-  const dateLabel = isToday
-    ? "Today's Logs"
-    : formatDateLabel(selectedDate)
+  async function handleLog() {
+    const finalGrams = useCustom ? parseFloat(customGrams) : grams
+    if (!finalGrams || finalGrams <= 0) { setError('Enter a valid gram amount'); return }
+    if (!selectedMatchaId) { setError('Select a matcha'); return }
+    setSaving(true)
+    setError('')
+    try {
+      // For past days log at noon ET, for today use current time
+      const logged_at = isToday
+        ? new Date().toISOString()
+        : new Date(`${selectedDate}T12:00:00-05:00`).toISOString()
+
+      const res = await fetch('/api/logs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ matcha_id: selectedMatchaId, grams: finalGrams, logged_at }),
+      })
+      if (!res.ok) throw new Error()
+      router.refresh()
+    } catch {
+      setError('Failed to save. Please try again.')
+    } finally {
+      setSaving(false)
+    }
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -71,17 +105,90 @@ export default function MatchaDashboard({ logs, collection }: Props) {
         </div>
       </div>
 
-      {/* Log button */}
-      <Link
-        href="/log"
-        className="bg-black text-white text-center font-bold text-xl py-4 rounded-full border-2 border-black shadow-[4px_4px_0px_#666] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all"
-      >
-        + Log Matcha
-      </Link>
+      {/* Inline log form */}
+      <div className="washi-card p-4 flex flex-col gap-3">
+        <p className="text-xs uppercase tracking-widest text-gray-400">
+          Log for {isToday ? 'today' : formatDateLabel(selectedDate)}
+        </p>
+
+        {/* Matcha selector */}
+        <div className="flex flex-col gap-2">
+          {collection.map((m) => (
+            <button
+              key={m.id}
+              onClick={() => setSelectedMatchaId(m.id)}
+              className={`flex items-center gap-3 px-4 py-2.5 rounded-xl border-2 transition-all text-left ${
+                selectedMatchaId === m.id
+                  ? 'border-black bg-black text-white shadow-none'
+                  : 'border-black shadow-[2px_2px_0px_#1a1008] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5'
+              }`}
+            >
+              <div>
+                <p className="text-base font-semibold">{m.name}</p>
+                {m.brand && (
+                  <p className={`text-xs ${selectedMatchaId === m.id ? 'text-gray-300' : 'text-gray-400'}`}>{m.brand}</p>
+                )}
+              </div>
+            </button>
+          ))}
+        </div>
+
+        {/* Gram presets */}
+        <div className="flex gap-2">
+          {GRAM_PRESETS.map((g) => (
+            <button
+              key={g}
+              onClick={() => { setGrams(g); setUseCustom(false) }}
+              className={`flex-1 py-2 rounded-full border-2 border-black font-bold transition-all ${
+                !useCustom && grams === g
+                  ? 'bg-black text-white shadow-none'
+                  : 'shadow-[2px_2px_0px_#1a1008] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5'
+              }`}
+            >
+              {g}g
+            </button>
+          ))}
+          <button
+            onClick={() => setUseCustom(true)}
+            className={`flex-1 py-2 rounded-full border-2 border-black font-bold transition-all ${
+              useCustom
+                ? 'bg-black text-white shadow-none'
+                : 'shadow-[2px_2px_0px_#1a1008] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5'
+            }`}
+          >
+            Other
+          </button>
+        </div>
+
+        {useCustom && (
+          <input
+            type="number"
+            value={customGrams}
+            onChange={(e) => setCustomGrams(e.target.value)}
+            placeholder="e.g. 2.5"
+            step="0.5"
+            min="0.5"
+            autoFocus
+            className="border-2 border-black rounded-xl px-4 py-2 text-base outline-none focus:shadow-[2px_2px_0px_#000]"
+          />
+        )}
+
+        {error && <p className="text-red-500 text-sm">{error}</p>}
+
+        <button
+          onClick={handleLog}
+          disabled={saving || !selectedMatchaId}
+          className="bg-black text-white font-bold text-base py-3 rounded-full border-2 border-black shadow-[3px_3px_0px_#666] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 disabled:opacity-40 transition-all"
+        >
+          {saving ? 'Saving...' : 'Confirm →'}
+        </button>
+      </div>
 
       {/* Selected day logs */}
       <div className="flex flex-col gap-3">
-        <p className="text-xs uppercase tracking-widest text-gray-400">{dateLabel}</p>
+        <p className="text-xs uppercase tracking-widest text-gray-400">
+          {isToday ? "Today's Logs" : formatDateLabel(selectedDate)}
+        </p>
         {selectedLogs.length === 0 ? (
           <p className="text-sm text-gray-400">No matcha logged.</p>
         ) : (
