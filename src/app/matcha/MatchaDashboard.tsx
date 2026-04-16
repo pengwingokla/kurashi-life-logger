@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import StreakHeatmap from '@/components/StreakHeatmap'
 import MatchaAreaChart from '@/components/MatchaAreaChart'
+import TimeOfDayHeatmap from '@/components/TimeOfDayHeatmap'
 import LogActions from './LogActions'
 import { MatchaLog, MatchaCollection } from '@/lib/supabase'
 import { toETDateKey, todayET, formatTimeET24h, formatDateLabel, etTimeToUTC } from '@/lib/time'
@@ -105,9 +106,12 @@ export default function MatchaDashboard({ logs, collection: initialCollection }:
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Heatmap */}
+      {/* Heatmap + Time of day */}
       <div className="washi-card p-4 overflow-x-auto">
-        <StreakHeatmap logs={logs} selectedDate={selectedDate} onDayClick={setSelectedDate} />
+        <div className="flex gap-3 items-start">
+          <StreakHeatmap logs={logs} selectedDate={selectedDate} onDayClick={setSelectedDate} />
+          <TimeOfDayHeatmap logs={logs} />
+        </div>
       </div>
 
       {/* Stats */}
