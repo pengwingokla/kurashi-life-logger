@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { MatchaLog } from '@/lib/supabase'
 import MatchaDashboard from './MatchaDashboard'
+import TopBar from '@/components/TopBar'
 
 export default async function MatchaPage() {
   const from = new Date()
@@ -25,19 +26,19 @@ export default async function MatchaPage() {
     <main className="min-h-screen text-[#1a1008] font-[var(--font-jetbrains)]">
       <div className="max-w-md mx-auto px-4 py-8 flex flex-col gap-6">
 
-        {/* Nav bar */}
-        <div className="flex items-center justify-between border-b-2 border-black pb-3">
-          <Link
-            href="/"
-            className="flex items-center gap-1 text-sm text-gray-500 hover:text-black transition-colors"
-          >
-            ‹ Home
-          </Link>
-          <h1 className="text-base font-bold tracking-wide">Matcha Log</h1>
-          <Link href="/settings" className="hover:opacity-60 transition-opacity">
-            <img src="/icons/setting-2.svg" alt="Settings" className="w-5 h-5" />
-          </Link>
-        </div>
+        <TopBar
+          title="Matcha Log"
+          left={
+            <Link href="/" className="text-sm text-gray-500 hover:text-black transition-colors">
+              ‹ Home
+            </Link>
+          }
+          right={
+            <Link href="/settings" className="hover:opacity-60 transition-opacity">
+              <img src="/icons/setting-2.svg" alt="Settings" className="w-5 h-5" />
+            </Link>
+          }
+        />
 
         <MatchaDashboard logs={logs} collection={collection} />
       </div>

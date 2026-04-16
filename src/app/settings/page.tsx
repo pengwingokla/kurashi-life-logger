@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { MatchaCollection } from '@/lib/supabase'
+import TopBar from '@/components/TopBar'
 
 export default function SettingsPage() {
   const router = useRouter()
@@ -46,16 +47,17 @@ export default function SettingsPage() {
     <main className="min-h-screen text-[#1a1008] font-[var(--font-jetbrains)]">
       <div className="max-w-md mx-auto px-4 py-8 flex flex-col gap-6">
 
-        {/* Header */}
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => router.back()}
-            className="border-2 border-black rounded-full px-3 py-1 text-sm hover:bg-black hover:text-white transition-colors"
-          >
-            ← Back
-          </button>
-          <h1 className="text-3xl font-bold">Settings</h1>
-        </div>
+        <TopBar
+          title="Settings"
+          left={
+            <button
+              onClick={() => router.back()}
+              className="text-sm text-gray-500 hover:text-black transition-colors"
+            >
+              ‹ Back
+            </button>
+          }
+        />
 
         {/* iOS Shortcut */}
         <div className="washi-card p-4 flex flex-col gap-3">
@@ -111,7 +113,7 @@ export default function SettingsPage() {
             <select
               value={grade}
               onChange={(e) => setGrade(e.target.value)}
-              className="border-2 border-black rounded-xl px-4 py-3 text-lg outline-none bg-white"
+              className="border-2 border-black rounded-xl px-4 py-3 text-lg outline-none"
             >
               <option value="ceremonial">Ceremonial</option>
               <option value="premium">Premium</option>

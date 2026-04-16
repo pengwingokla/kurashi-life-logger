@@ -112,34 +112,25 @@ export default function MatchaDashboard({ logs, collection }: Props) {
         </p>
 
         {/* Matcha selector */}
-        <div className="flex flex-col gap-2">
+        <select
+          value={selectedMatchaId ?? ''}
+          onChange={(e) => setSelectedMatchaId(e.target.value || null)}
+          className="border-2 border-black rounded-xl px-3 py-2.5 text-base outline-none shadow-[2px_2px_0px_#1a1008] bg-transparent"
+        >
           {collection.map((m) => (
-            <button
-              key={m.id}
-              onClick={() => setSelectedMatchaId(m.id)}
-              className={`flex items-center gap-3 px-4 py-2.5 rounded-xl border-2 transition-all text-left ${
-                selectedMatchaId === m.id
-                  ? 'border-black bg-black text-white shadow-none'
-                  : 'border-black shadow-[2px_2px_0px_#1a1008] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5'
-              }`}
-            >
-              <div>
-                <p className="text-base font-semibold">{m.name}</p>
-                {m.brand && (
-                  <p className={`text-xs ${selectedMatchaId === m.id ? 'text-gray-300' : 'text-gray-400'}`}>{m.brand}</p>
-                )}
-              </div>
-            </button>
+            <option key={m.id} value={m.id}>
+              {m.name}{m.brand ? ` — ${m.brand}` : ''}
+            </option>
           ))}
-        </div>
+        </select>
 
         {/* Gram presets */}
-        <div className="flex gap-2">
+        <div className="flex gap-1.5">
           {GRAM_PRESETS.map((g) => (
             <button
               key={g}
               onClick={() => { setGrams(g); setUseCustom(false) }}
-              className={`flex-1 py-2 rounded-full border-2 border-black font-bold transition-all ${
+              className={`flex-1 py-1 text-sm rounded-full border-2 border-black font-bold transition-all ${
                 !useCustom && grams === g
                   ? 'bg-black text-white shadow-none'
                   : 'shadow-[2px_2px_0px_#1a1008] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5'
@@ -150,7 +141,7 @@ export default function MatchaDashboard({ logs, collection }: Props) {
           ))}
           <button
             onClick={() => setUseCustom(true)}
-            className={`flex-1 py-2 rounded-full border-2 border-black font-bold transition-all ${
+            className={`flex-1 py-1 text-sm rounded-full border-2 border-black font-bold transition-all ${
               useCustom
                 ? 'bg-black text-white shadow-none'
                 : 'shadow-[2px_2px_0px_#1a1008] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5'
@@ -169,7 +160,7 @@ export default function MatchaDashboard({ logs, collection }: Props) {
             step="0.5"
             min="0.5"
             autoFocus
-            className="border-2 border-black rounded-xl px-4 py-2 text-base outline-none focus:shadow-[2px_2px_0px_#000]"
+            className="border-2 border-black rounded-xl px-3 py-1.5 text-sm outline-none focus:shadow-[2px_2px_0px_#000]"
           />
         )}
 
@@ -178,7 +169,7 @@ export default function MatchaDashboard({ logs, collection }: Props) {
         <button
           onClick={handleLog}
           disabled={saving || !selectedMatchaId}
-          className="bg-black text-white font-bold text-base py-3 rounded-full border-2 border-black shadow-[3px_3px_0px_#666] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 disabled:opacity-40 transition-all"
+          className="bg-black text-white font-bold text-sm py-2 rounded-full border-2 border-black shadow-[2px_2px_0px_#666] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 disabled:opacity-40 transition-all"
         >
           {saving ? 'Saving...' : 'Confirm →'}
         </button>

@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabase'
 import { MatchaLog } from '@/lib/supabase'
 import { formatTimeET, formatDateLabel } from '@/lib/time'
 import LogActions from './LogActions'
+import TopBar from '@/components/TopBar'
 
 export default async function DayPage({ params }: { params: Promise<{ date: string }> }) {
   const { date } = await params
@@ -29,15 +30,14 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
     <main className="min-h-screen text-[#1a1008] font-[var(--font-jetbrains)]">
       <div className="max-w-md mx-auto px-4 py-8 flex flex-col gap-6">
 
-        <div className="flex items-center gap-3">
-          <Link
-            href="/matcha"
-            className="border-2 border-black rounded-full px-3 py-1 text-sm hover:bg-black hover:text-white transition-colors"
-          >
-            ← Back
-          </Link>
-          <h1 className="text-2xl font-bold">{formatDateLabel(date)}</h1>
-        </div>
+        <TopBar
+          title={formatDateLabel(date)}
+          left={
+            <Link href="/matcha" className="text-sm text-gray-500 hover:text-black transition-colors">
+              ‹ Back
+            </Link>
+          }
+        />
 
         {logs.length === 0 ? (
           <div className="border-2 border-black rounded-2xl p-6 shadow-[4px_4px_0px_#000] text-center">
