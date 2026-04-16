@@ -158,9 +158,9 @@ export default function MatchaAreaChart({ logs }: Props) {
               textAnchor="end"
               dominantBaseline="middle"
               fontSize={8}
-              fill="#9ca3af"
+              fill="#6b7280"
             >
-              {g}
+              {g > 0 ? `${g}g` : '0'}
             </text>
           </g>
         ))}

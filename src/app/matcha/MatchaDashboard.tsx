@@ -6,7 +6,7 @@ import StreakHeatmap from '@/components/StreakHeatmap'
 import MatchaAreaChart from '@/components/MatchaAreaChart'
 import LogActions from './LogActions'
 import { MatchaLog, MatchaCollection } from '@/lib/supabase'
-import { toETDateKey, todayET, formatTimeET, formatDateLabel, etTimeToUTC } from '@/lib/time'
+import { toETDateKey, todayET, formatTimeET24h, formatDateLabel, etTimeToUTC } from '@/lib/time'
 
 const GRAM_PRESETS = [2, 3, 4]
 
@@ -257,7 +257,7 @@ export default function MatchaDashboard({ logs, collection: initialCollection }:
                 </div>
                 <div className="text-right">
                   <p className="t-h2 font-bold">{log.grams}g</p>
-                  <p className="t-body">{formatTimeET(log.logged_at)}</p>
+                  <p className="t-body">{formatTimeET24h(log.logged_at)}</p>
                 </div>
               </div>
               <LogActions log={log} collection={collection} date={selectedDate} />
