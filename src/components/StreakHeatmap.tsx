@@ -59,7 +59,7 @@ export default function StreakHeatmap({ logs, selectedDate, onDayClick }: Props)
         {DAY_LABELS.map((label, i) => (
           <div key={i} className="h-4 flex items-center justify-end pr-1">
             {label && (
-              <span className="text-[9px] text-gray-400 leading-none">{label}</span>
+              <span className="text-[9px] text-gray-500 leading-none">{label}</span>
             )}
           </div>
         ))}
@@ -72,7 +72,7 @@ export default function StreakHeatmap({ logs, selectedDate, onDayClick }: Props)
           {weeks.map((_, wi) => (
             <div key={wi} className="w-4 h-4 flex items-center justify-center">
               {monthLabels[wi] && (
-                <span className="text-[9px] text-gray-400 leading-none">{monthLabels[wi]}</span>
+                <span className="text-[9px] text-gray-500 leading-none">{monthLabels[wi]}</span>
               )}
             </div>
           ))}

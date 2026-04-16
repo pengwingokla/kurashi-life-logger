@@ -92,7 +92,7 @@ export default function LogActions({ log, collection, date }: Props) {
           {!addingMatcha ? (
             <button
               onClick={() => setAddingMatcha(true)}
-              className="text-xs text-gray-400 hover:text-black transition-colors self-start mt-1"
+              className="text-xs text-gray-500 hover:text-black transition-colors self-start mt-1"
             >
               + Add new matcha
             </button>
@@ -160,7 +160,7 @@ export default function LogActions({ log, collection, date }: Props) {
               className={`flex-1 py-1 text-sm text-center rounded-full border-2 border-black font-bold outline-none transition-all ${
                 useCustom
                   ? 'bg-black text-white shadow-none'
-                  : 'shadow-[2px_2px_0px_#1a1008] placeholder:text-gray-400'
+                  : 'shadow-[2px_2px_0px_#1a1008] placeholder:text-gray-500'
               }`}
             />
           </div>
@@ -197,7 +197,7 @@ export default function LogActions({ log, collection, date }: Props) {
 
   return (
     <div className="flex gap-4 mt-2">
-      <button onClick={() => setEditing(true)} className="text-sm text-gray-400 underline underline-offset-2 hover:text-black">
+      <button onClick={() => setEditing(true)} className="text-sm text-gray-500 underline underline-offset-2 hover:text-black">
         Edit
       </button>
       <button onClick={handleDelete} className="text-sm text-red-400 underline underline-offset-2 hover:text-red-600">

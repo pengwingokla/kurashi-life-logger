@@ -154,7 +154,7 @@ export default function MatchaDashboard({ logs, collection: initialCollection }:
         {!addingMatcha ? (
           <button
             onClick={() => setAddingMatcha(true)}
-            className="text-xs text-gray-400 hover:text-black transition-colors self-start"
+            className="text-xs text-gray-500 hover:text-black transition-colors self-start"
           >
             + Add new matcha
           </button>
@@ -219,7 +219,7 @@ export default function MatchaDashboard({ logs, collection: initialCollection }:
             className={`flex-1 py-1 text-sm text-center rounded-full border-2 border-black font-bold outline-none transition-all ${
               useCustom
                 ? 'bg-black text-white shadow-none'
-                : 'shadow-[2px_2px_0px_#1a1008] placeholder:text-gray-400'
+                : 'shadow-[2px_2px_0px_#1a1008] placeholder:text-gray-500'
             }`}
           />
         </div>

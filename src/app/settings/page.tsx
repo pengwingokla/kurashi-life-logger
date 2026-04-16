@@ -88,7 +88,7 @@ export default function SettingsPage() {
                   <p className="t-h2">{m.name}</p>
                   {m.brand && <p className="t-body">{m.brand}</p>}
                 </div>
-                <span className="text-sm text-gray-400 capitalize border border-gray-300 rounded-full px-2 py-0.5">{m.grade}</span>
+                <span className="text-sm text-gray-500 capitalize border border-gray-300 rounded-full px-2 py-0.5">{m.grade}</span>
               </div>
             ))}
           </div>

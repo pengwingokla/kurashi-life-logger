@@ -105,7 +105,7 @@ export default function MatchaAreaChart({ logs }: Props) {
               className={`text-xs font-bold transition-colors ${
                 i === rangeIdx
                   ? 'text-[#1a1008]'
-                  : 'text-gray-300 hover:text-gray-500'
+                  : 'text-gray-400 hover:text-gray-600'
               }`}
             >
               {r.label}
