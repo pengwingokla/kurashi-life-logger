@@ -14,8 +14,8 @@ export default async function HomePage() {
 
         {/* Header */}
         <div>
-          <h1 className="text-4xl font-bold">Dashboard</h1>
-          <p className="text-sm text-gray-400 mt-1 uppercase tracking-widest">{dateLabel}</p>
+          <h1 className="t-h1">Dashboard</h1>
+          <p className="t-label mt-1">{dateLabel}</p>
         </div>
 
         {/* Module grid */}

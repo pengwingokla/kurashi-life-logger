@@ -47,11 +47,11 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
           <>
             <div className="grid grid-cols-2 gap-4">
               <div className="washi-card p-4">
-                <p className="text-xs uppercase tracking-widest text-gray-400">Cups</p>
+                <p className="t-label">Cups</p>
                 <p className="text-4xl font-bold mt-1">{logs.length}</p>
               </div>
               <div className="washi-card p-4">
-                <p className="text-xs uppercase tracking-widest text-gray-400">Total</p>
+                <p className="t-label">Total</p>
                 <p className="text-4xl font-bold mt-1">{totalGrams}g</p>
               </div>
             </div>
@@ -64,19 +64,17 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
                 >
                   <div className="flex justify-between items-start">
                     <div>
-                      <p className="text-lg font-semibold">
-                        {log.matcha_collection?.name ?? 'Unknown matcha'}
-                      </p>
+                      <p className="t-h2">{log.matcha_collection?.name ?? 'Unknown matcha'}</p>
                       {log.matcha_collection?.brand && (
-                        <p className="text-sm text-gray-400">{log.matcha_collection.brand}</p>
+                        <p className="t-body">{log.matcha_collection.brand}</p>
                       )}
                       {log.notes && (
-                        <p className="text-sm text-gray-400 italic mt-0.5">{log.notes}</p>
+                        <p className="t-body italic mt-0.5">{log.notes}</p>
                       )}
                     </div>
                     <div className="text-right">
                       <p className="text-xl font-bold">{log.grams}g</p>
-                      <p className="text-sm text-gray-400">{formatTimeET(log.logged_at)}</p>
+                      <p className="t-body">{formatTimeET(log.logged_at)}</p>
                     </div>
                   </div>
                   <LogActions log={log} collection={collection} date={date} />

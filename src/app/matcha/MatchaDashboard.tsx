@@ -32,7 +32,6 @@ export default function MatchaDashboard({ logs, collection }: Props) {
   const today = todayET()
   const [selectedDate, setSelectedDate] = useState(today)
 
-  // Log form state
   const defaultMatcha = collection[0]?.id ?? null
   const [selectedMatchaId, setSelectedMatchaId] = useState<string | null>(defaultMatcha)
   const [grams, setGrams] = useState(3)
@@ -54,11 +53,9 @@ export default function MatchaDashboard({ logs, collection }: Props) {
     setSaving(true)
     setError('')
     try {
-      // For past days log at noon ET, for today use current time
       const logged_at = isToday
         ? new Date().toISOString()
         : new Date(`${selectedDate}T12:00:00-05:00`).toISOString()
-
       const res = await fetch('/api/logs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -80,25 +77,23 @@ export default function MatchaDashboard({ logs, collection }: Props) {
         <StreakHeatmap logs={logs} selectedDate={selectedDate} onDayClick={setSelectedDate} />
       </div>
 
-      {/* Stats (always today) */}
+      {/* Stats */}
       <div className="grid grid-cols-2 gap-4">
         <div className="washi-card p-4">
-          <p className="text-xs uppercase tracking-widest text-gray-400">Today</p>
+          <p className="t-label">Today</p>
           <p className="text-4xl font-bold mt-1">
             {todayLogs.length}
-            <span className="text-lg font-normal text-gray-400 ml-1">
+            <span className="text-base font-normal text-gray-400 ml-1">
               {todayLogs.length === 1 ? 'cup' : 'cups'}
             </span>
           </p>
-          {todayGrams > 0 && (
-            <p className="text-sm text-gray-400 mt-1">{todayGrams}g total</p>
-          )}
+          {todayGrams > 0 && <p className="t-body mt-1">{todayGrams}g total</p>}
         </div>
         <div className="washi-card p-4">
-          <p className="text-xs uppercase tracking-widest text-gray-400">Streak</p>
+          <p className="t-label">Streak</p>
           <p className="text-4xl font-bold mt-1">
             {streak}
-            <span className="text-lg font-normal text-gray-400 ml-1">
+            <span className="text-base font-normal text-gray-400 ml-1">
               {streak === 1 ? 'day' : 'days'}
             </span>
           </p>
@@ -107,15 +102,14 @@ export default function MatchaDashboard({ logs, collection }: Props) {
 
       {/* Inline log form */}
       <div className="washi-card p-4 flex flex-col gap-3">
-        <p className="text-xs uppercase tracking-widest text-gray-400">
+        <p className="t-label">
           Log for {isToday ? 'today' : formatDateLabel(selectedDate)}
         </p>
 
-        {/* Matcha selector */}
         <select
           value={selectedMatchaId ?? ''}
           onChange={(e) => setSelectedMatchaId(e.target.value || null)}
-          className="border-2 border-black rounded-xl px-3 py-2.5 text-base outline-none shadow-[2px_2px_0px_#1a1008] bg-transparent"
+          className="border-2 border-black rounded-xl px-3 py-2 text-sm outline-none shadow-[2px_2px_0px_#1a1008] bg-transparent"
         >
           {collection.map((m) => (
             <option key={m.id} value={m.id}>
@@ -124,7 +118,6 @@ export default function MatchaDashboard({ logs, collection }: Props) {
           ))}
         </select>
 
-        {/* Gram presets */}
         <div className="flex gap-1.5">
           {GRAM_PRESETS.map((g) => (
             <button
@@ -177,29 +170,27 @@ export default function MatchaDashboard({ logs, collection }: Props) {
 
       {/* Selected day logs */}
       <div className="flex flex-col gap-3">
-        <p className="text-xs uppercase tracking-widest text-gray-400">
+        <p className="t-label">
           {isToday ? "Today's Logs" : formatDateLabel(selectedDate)}
         </p>
         {selectedLogs.length === 0 ? (
-          <p className="text-sm text-gray-400">No matcha logged.</p>
+          <p className="t-body">No matcha logged.</p>
         ) : (
           selectedLogs.map((log) => (
             <div key={log.id} className="washi-card px-4 py-3">
               <div className="flex justify-between items-start">
                 <div>
-                  <p className="text-lg font-semibold">
-                    {log.matcha_collection?.name ?? 'Unknown matcha'}
-                  </p>
+                  <p className="t-h2">{log.matcha_collection?.name ?? 'Unknown matcha'}</p>
                   {log.matcha_collection?.brand && (
-                    <p className="text-sm text-gray-400">{log.matcha_collection.brand}</p>
+                    <p className="t-body">{log.matcha_collection.brand}</p>
                   )}
                   {log.notes && (
-                    <p className="text-sm text-gray-400 italic mt-0.5">{log.notes}</p>
+                    <p className="t-body italic mt-0.5">{log.notes}</p>
                   )}
                 </div>
                 <div className="text-right">
                   <p className="text-xl font-bold">{log.grams}g</p>
-                  <p className="text-sm text-gray-400">{formatTimeET(log.logged_at)}</p>
+                  <p className="t-body">{formatTimeET(log.logged_at)}</p>
                 </div>
               </div>
               <LogActions log={log} collection={collection} date={selectedDate} />
