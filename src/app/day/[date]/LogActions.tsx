@@ -39,14 +39,13 @@ export default function LogActions({ log, collection, date }: Props) {
 
   if (editing) {
     return (
-      <div className="mt-3 flex flex-col gap-3 pt-3 border-t border-stone-100 dark:border-stone-700">
-        {/* Matcha selector */}
+      <div className="mt-3 flex flex-col gap-3 pt-3 border-t-2 border-black">
         <div className="flex flex-col gap-1">
-          <p className="text-xs text-stone-400">Matcha</p>
+          <p className="text-xs uppercase tracking-widest text-gray-400">Matcha</p>
           <select
             value={matchaId ?? ''}
             onChange={(e) => setMatchaId(e.target.value || null)}
-            className="bg-stone-100 dark:bg-stone-700 rounded-lg px-3 py-2 text-sm outline-none"
+            className="border-2 border-black rounded-xl px-3 py-2 text-base outline-none bg-white"
           >
             {collection.map((m) => (
               <option key={m.id} value={m.id}>{m.name}</option>
@@ -54,18 +53,17 @@ export default function LogActions({ log, collection, date }: Props) {
           </select>
         </div>
 
-        {/* Gram presets */}
         <div className="flex flex-col gap-1">
-          <p className="text-xs text-stone-400">Grams</p>
+          <p className="text-xs uppercase tracking-widest text-gray-400">Grams</p>
           <div className="flex gap-2">
             {GRAM_PRESETS.map((g) => (
               <button
                 key={g}
                 onClick={() => setGrams(g)}
-                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`flex-1 py-2 rounded-full border-2 border-black font-bold transition-all ${
                   grams === g
-                    ? 'bg-green-500 text-white'
-                    : 'bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-300'
+                    ? 'bg-black text-white'
+                    : 'bg-white shadow-[2px_2px_0px_#000] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5'
                 }`}
               >
                 {g}g
@@ -77,7 +75,7 @@ export default function LogActions({ log, collection, date }: Props) {
               onChange={(e) => setGrams(parseFloat(e.target.value))}
               step="0.5"
               min="0.5"
-              className="flex-1 bg-stone-100 dark:bg-stone-700 rounded-lg px-2 py-2 text-sm text-center outline-none"
+              className="flex-1 border-2 border-black rounded-xl px-2 py-2 text-center outline-none text-base"
             />
           </div>
         </div>
@@ -85,16 +83,16 @@ export default function LogActions({ log, collection, date }: Props) {
         <div className="flex gap-2">
           <button
             onClick={() => setEditing(false)}
-            className="flex-1 py-2 rounded-lg text-sm text-stone-500 bg-stone-100 dark:bg-stone-700"
+            className="flex-1 py-2 rounded-full border-2 border-black text-sm font-bold shadow-[2px_2px_0px_#000] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
           >
             Cancel
           </button>
           <button
             onClick={handleSave}
             disabled={saving}
-            className="flex-1 py-2 rounded-lg text-sm font-semibold text-white bg-green-500 disabled:opacity-40"
+            className="flex-1 py-2 rounded-full border-2 border-black text-sm font-bold bg-black text-white disabled:opacity-40"
           >
-            {saving ? 'Saving...' : 'Save'}
+            {saving ? 'Saving...' : 'Save →'}
           </button>
         </div>
       </div>
@@ -102,17 +100,11 @@ export default function LogActions({ log, collection, date }: Props) {
   }
 
   return (
-    <div className="flex gap-3 mt-2">
-      <button
-        onClick={() => setEditing(true)}
-        className="text-xs text-stone-400 hover:text-stone-600"
-      >
+    <div className="flex gap-4 mt-2">
+      <button onClick={() => setEditing(true)} className="text-sm text-gray-400 underline underline-offset-2 hover:text-black">
         Edit
       </button>
-      <button
-        onClick={handleDelete}
-        className="text-xs text-red-400 hover:text-red-600"
-      >
+      <button onClick={handleDelete} className="text-sm text-red-400 underline underline-offset-2 hover:text-red-600">
         Delete
       </button>
     </div>

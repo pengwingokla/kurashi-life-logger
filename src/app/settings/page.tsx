@@ -14,9 +14,7 @@ export default function SettingsPage() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    fetch('/api/collection')
-      .then((r) => r.json())
-      .then(setCollection)
+    fetch('/api/collection').then((r) => r.json()).then(setCollection)
   }, [])
 
   async function handleAdd() {
@@ -32,9 +30,7 @@ export default function SettingsPage() {
       if (!res.ok) throw new Error()
       const added = await res.json()
       setCollection((prev) => [...prev, added])
-      setName('')
-      setBrand('')
-      setGrade('ceremonial')
+      setName(''); setBrand(''); setGrade('ceremonial')
     } catch {
       setError('Failed to add matcha.')
     } finally {
@@ -47,86 +43,88 @@ export default function SettingsPage() {
     : '/api/shortcut'
 
   return (
-    <main className="min-h-screen bg-stone-50 dark:bg-stone-900 text-stone-900 dark:text-stone-100">
+    <main className="min-h-screen bg-white text-black font-[var(--font-caveat)]">
       <div className="max-w-md mx-auto px-4 py-8 flex flex-col gap-6">
 
+        {/* Header */}
         <div className="flex items-center gap-3">
-          <button onClick={() => router.back()} className="text-stone-400 hover:text-stone-600 text-sm">
+          <button
+            onClick={() => router.back()}
+            className="border-2 border-black rounded-full px-3 py-1 text-sm hover:bg-black hover:text-white transition-colors"
+          >
             ← Back
           </button>
-          <h1 className="text-xl font-semibold">Settings</h1>
+          <h1 className="text-3xl font-bold">Settings</h1>
         </div>
 
         {/* iOS Shortcut */}
-        <div className="bg-white dark:bg-stone-800 rounded-2xl p-4 shadow-sm flex flex-col gap-3">
-          <p className="text-xs text-stone-400 uppercase tracking-wide">iOS Shortcut</p>
-          <p className="text-sm text-stone-600 dark:text-stone-300">
-            Set up a Shortcut to log matcha in one tap from your home screen.
-          </p>
-          <ol className="text-sm text-stone-600 dark:text-stone-400 list-decimal list-inside flex flex-col gap-1">
+        <div className="border-2 border-black rounded-2xl p-4 shadow-[4px_4px_0px_#000] flex flex-col gap-3">
+          <p className="text-xs uppercase tracking-widest text-gray-400">iOS Shortcut</p>
+          <p className="text-base text-gray-600">Log matcha in one tap from your home screen.</p>
+          <ol className="text-sm text-gray-600 list-decimal list-inside flex flex-col gap-1">
             <li>Open the Shortcuts app on iPhone</li>
             <li>Tap <strong>+</strong> → Add Action → <strong>Get Contents of URL</strong></li>
-            <li>Set Method to <strong>POST</strong></li>
+            <li>Set Method to <strong>POST</strong>, Body: <strong>JSON</strong></li>
+            <li>Add field: <code>text</code> → your input</li>
             <li>Paste your webhook URL below</li>
-            <li>Add the Shortcut to your home screen</li>
           </ol>
-          <div className="bg-stone-100 dark:bg-stone-700 rounded-xl px-4 py-3 text-xs font-mono break-all">
+          <div className="border-2 border-black rounded-xl px-4 py-3 bg-gray-50 text-sm font-mono break-all shadow-[2px_2px_0px_#000]">
             {shortcutUrl}
           </div>
         </div>
 
         {/* My Matchas */}
-        <div className="bg-white dark:bg-stone-800 rounded-2xl p-4 shadow-sm flex flex-col gap-3">
-          <p className="text-xs text-stone-400 uppercase tracking-wide">My Matchas</p>
+        <div className="border-2 border-black rounded-2xl p-4 shadow-[4px_4px_0px_#000] flex flex-col gap-3">
+          <p className="text-xs uppercase tracking-widest text-gray-400">My Matchas</p>
           <div className="flex flex-col gap-2">
             {collection.map((m) => (
               <div
                 key={m.id}
-                className="flex justify-between items-center px-3 py-2 bg-stone-50 dark:bg-stone-700 rounded-xl"
+                className="flex justify-between items-center border-2 border-black rounded-xl px-4 py-3 shadow-[2px_2px_0px_#000]"
               >
                 <div>
-                  <p className="text-sm font-medium">{m.name}</p>
-                  {m.brand && <p className="text-xs text-stone-400">{m.brand}</p>}
+                  <p className="text-lg font-semibold">{m.name}</p>
+                  {m.brand && <p className="text-sm text-gray-400">{m.brand}</p>}
                 </div>
-                <span className="text-xs text-stone-400 capitalize">{m.grade}</span>
+                <span className="text-sm text-gray-400 capitalize border border-gray-300 rounded-full px-2 py-0.5">{m.grade}</span>
               </div>
             ))}
           </div>
 
-          {/* Add new */}
-          <div className="flex flex-col gap-2 pt-2 border-t border-stone-100 dark:border-stone-700">
-            <p className="text-xs text-stone-400">Add matcha</p>
+          {/* Add form */}
+          <div className="flex flex-col gap-2 pt-3 border-t-2 border-black">
+            <p className="text-xs uppercase tracking-widest text-gray-400">Add matcha</p>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Name (required)"
-              className="bg-stone-100 dark:bg-stone-700 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-green-400"
+              className="border-2 border-black rounded-xl px-4 py-3 text-lg outline-none focus:shadow-[2px_2px_0px_#000] transition-shadow placeholder:text-gray-300"
             />
             <input
               type="text"
               value={brand}
               onChange={(e) => setBrand(e.target.value)}
               placeholder="Brand (optional)"
-              className="bg-stone-100 dark:bg-stone-700 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-green-400"
+              className="border-2 border-black rounded-xl px-4 py-3 text-lg outline-none focus:shadow-[2px_2px_0px_#000] transition-shadow placeholder:text-gray-300"
             />
             <select
               value={grade}
               onChange={(e) => setGrade(e.target.value)}
-              className="bg-stone-100 dark:bg-stone-700 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-green-400"
+              className="border-2 border-black rounded-xl px-4 py-3 text-lg outline-none bg-white"
             >
               <option value="ceremonial">Ceremonial</option>
               <option value="premium">Premium</option>
               <option value="culinary">Culinary</option>
               <option value="other">Other</option>
             </select>
-            {error && <p className="text-red-500 text-xs">{error}</p>}
+            {error && <p className="text-red-500 text-sm">{error}</p>}
             <button
               onClick={handleAdd}
               disabled={saving}
-              className="bg-green-500 hover:bg-green-600 disabled:opacity-40 text-white font-semibold py-3 rounded-xl transition-colors"
+              className="bg-black text-white font-bold text-lg py-3 rounded-full border-2 border-black shadow-[3px_3px_0px_#666] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 disabled:opacity-40 transition-all"
             >
-              {saving ? 'Adding...' : 'Add Matcha'}
+              {saving ? 'Adding...' : 'Add Matcha →'}
             </button>
           </div>
         </div>

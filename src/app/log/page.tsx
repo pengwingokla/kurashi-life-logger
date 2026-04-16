@@ -38,21 +38,9 @@ export default function LogPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text }),
       })
-      const parsed = await res.json()
-      if (parsed.matcha_id) setSelectedId(parsed.matcha_id)
-      if (parsed.grams) {
-        setGrams(parsed.grams)
-        if (!GRAM_PRESETS.includes(parsed.grams)) {
-          setUseCustom(true)
-          setCustomGrams(String(parsed.grams))
-        }
-      }
-      await saveLog({
-        matcha_id: parsed.matcha_id ?? selectedId,
-        grams: parsed.grams ?? grams,
-        notes: parsed.notes ?? text,
-        logged_at: parsed.logged_at,
-      })
+      if (!res.ok) throw new Error()
+      router.push('/')
+      router.refresh()
     } catch {
       setError('Failed to parse. Try the quick-select below.')
     } finally {
@@ -62,26 +50,14 @@ export default function LogPage() {
 
   async function handleConfirm() {
     const finalGrams = useCustom ? parseFloat(customGrams) : grams
-    if (!finalGrams || finalGrams <= 0) {
-      setError('Enter a valid gram amount')
-      return
-    }
-    await saveLog({ matcha_id: selectedId, grams: finalGrams })
-  }
-
-  async function saveLog(payload: {
-    matcha_id: string | null
-    grams: number
-    notes?: string | null
-    logged_at?: string
-  }) {
+    if (!finalGrams || finalGrams <= 0) { setError('Enter a valid gram amount'); return }
     setSaving(true)
     setError('')
     try {
       const res = await fetch('/api/logs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ matcha_id: selectedId, grams: finalGrams }),
       })
       if (!res.ok) throw new Error()
       router.push('/')
@@ -94,68 +70,64 @@ export default function LogPage() {
   }
 
   return (
-    <main className="min-h-screen bg-stone-50 dark:bg-stone-900 text-stone-900 dark:text-stone-100">
+    <main className="min-h-screen bg-white text-black font-[var(--font-caveat)]">
       <div className="max-w-md mx-auto px-4 py-8 flex flex-col gap-6">
 
         {/* Header */}
         <div className="flex items-center gap-3">
           <button
             onClick={() => router.back()}
-            className="text-stone-400 hover:text-stone-600 text-sm"
+            className="border-2 border-black rounded-full px-3 py-1 text-sm hover:bg-black hover:text-white transition-colors"
           >
             ← Back
           </button>
-          <h1 className="text-xl font-semibold">Log Matcha</h1>
+          <h1 className="text-3xl font-bold">Log Matcha</h1>
         </div>
 
-        {/* Natural language input */}
-        <div className="bg-white dark:bg-stone-800 rounded-2xl p-4 shadow-sm flex flex-col gap-3">
-          <p className="text-xs text-stone-400 uppercase tracking-wide">Type it</p>
+        {/* AI input */}
+        <div className="border-2 border-black rounded-2xl p-4 shadow-[4px_4px_0px_#000] flex flex-col gap-3">
+          <p className="text-xs uppercase tracking-widest text-gray-400">Type it</p>
           <input
             type="text"
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder='e.g. "3g of Ippodo just now"'
-            className="w-full bg-stone-100 dark:bg-stone-700 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-green-400"
+            className="w-full border-2 border-black rounded-xl px-4 py-3 text-lg outline-none focus:shadow-[2px_2px_0px_#000] transition-shadow placeholder:text-gray-300"
             onKeyDown={(e) => e.key === 'Enter' && handleParseAndLog()}
           />
           <button
             onClick={handleParseAndLog}
             disabled={!text.trim() || parsing || saving}
-            className="bg-green-500 disabled:opacity-40 text-white font-semibold py-3 rounded-xl transition-colors"
+            className="bg-black text-white font-bold text-lg py-3 rounded-full border-2 border-black shadow-[3px_3px_0px_#666] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 disabled:opacity-40 transition-all"
           >
-            {parsing ? 'Parsing...' : 'Log with AI'}
+            {parsing ? 'Parsing...' : 'Log with AI →'}
           </button>
         </div>
 
+        {/* Divider */}
         <div className="flex items-center gap-3">
-          <div className="flex-1 h-px bg-stone-200 dark:bg-stone-700" />
-          <span className="text-xs text-stone-400">or pick manually</span>
-          <div className="flex-1 h-px bg-stone-200 dark:bg-stone-700" />
+          <div className="flex-1 h-0.5 bg-black" />
+          <span className="text-sm text-gray-400">or pick manually</span>
+          <div className="flex-1 h-0.5 bg-black" />
         </div>
 
         {/* Matcha selector */}
-        <div className="bg-white dark:bg-stone-800 rounded-2xl p-4 shadow-sm flex flex-col gap-3">
-          <p className="text-xs text-stone-400 uppercase tracking-wide">Which matcha?</p>
+        <div className="border-2 border-black rounded-2xl p-4 shadow-[4px_4px_0px_#000] flex flex-col gap-3">
+          <p className="text-xs uppercase tracking-widest text-gray-400">Which matcha?</p>
           <div className="flex flex-col gap-2">
             {collection.map((m) => (
               <button
                 key={m.id}
                 onClick={() => setSelectedId(m.id)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-colors text-left ${
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-all text-left ${
                   selectedId === m.id
-                    ? 'border-green-500 bg-green-50 dark:bg-green-950'
-                    : 'border-transparent bg-stone-50 dark:bg-stone-700'
+                    ? 'border-black bg-black text-white shadow-none'
+                    : 'border-black bg-white shadow-[2px_2px_0px_#000] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5'
                 }`}
               >
-                <div
-                  className={`w-3 h-3 rounded-full border-2 ${
-                    selectedId === m.id ? 'border-green-500 bg-green-500' : 'border-stone-300'
-                  }`}
-                />
                 <div>
-                  <p className="text-sm font-medium">{m.name}</p>
-                  {m.brand && <p className="text-xs text-stone-400">{m.brand}</p>}
+                  <p className="text-lg font-semibold">{m.name}</p>
+                  {m.brand && <p className={`text-sm ${selectedId === m.id ? 'text-gray-300' : 'text-gray-400'}`}>{m.brand}</p>}
                 </div>
               </button>
             ))}
@@ -163,17 +135,17 @@ export default function LogPage() {
         </div>
 
         {/* Gram selector */}
-        <div className="bg-white dark:bg-stone-800 rounded-2xl p-4 shadow-sm flex flex-col gap-3">
-          <p className="text-xs text-stone-400 uppercase tracking-wide">Grams</p>
+        <div className="border-2 border-black rounded-2xl p-4 shadow-[4px_4px_0px_#000] flex flex-col gap-3">
+          <p className="text-xs uppercase tracking-widest text-gray-400">Grams</p>
           <div className="flex gap-2">
             {GRAM_PRESETS.map((g) => (
               <button
                 key={g}
                 onClick={() => { setGrams(g); setUseCustom(false) }}
-                className={`flex-1 py-3 rounded-xl font-semibold text-sm transition-colors ${
+                className={`flex-1 py-3 rounded-full border-2 border-black font-bold text-lg transition-all ${
                   !useCustom && grams === g
-                    ? 'bg-green-500 text-white'
-                    : 'bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-300'
+                    ? 'bg-black text-white shadow-none'
+                    : 'bg-white shadow-[2px_2px_0px_#000] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5'
                 }`}
               >
                 {g}g
@@ -181,10 +153,10 @@ export default function LogPage() {
             ))}
             <button
               onClick={() => setUseCustom(true)}
-              className={`flex-1 py-3 rounded-xl font-semibold text-sm transition-colors ${
+              className={`flex-1 py-3 rounded-full border-2 border-black font-bold text-lg transition-all ${
                 useCustom
-                  ? 'bg-green-500 text-white'
-                  : 'bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-300'
+                  ? 'bg-black text-white shadow-none'
+                  : 'bg-white shadow-[2px_2px_0px_#000] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5'
               }`}
             >
               Other
@@ -199,22 +171,20 @@ export default function LogPage() {
               step="0.5"
               min="0.5"
               autoFocus
-              className="bg-stone-100 dark:bg-stone-700 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-green-400"
+              className="border-2 border-black rounded-xl px-4 py-3 text-lg outline-none focus:shadow-[2px_2px_0px_#000]"
             />
           )}
         </div>
 
-        {error && (
-          <p className="text-red-500 text-sm text-center">{error}</p>
-        )}
+        {error && <p className="text-red-500 text-center">{error}</p>}
 
         {/* Confirm */}
         <button
           onClick={handleConfirm}
           disabled={saving || !selectedId}
-          className="bg-green-500 hover:bg-green-600 disabled:opacity-40 text-white font-semibold py-4 rounded-2xl transition-colors shadow-sm"
+          className="bg-black text-white font-bold text-xl py-4 rounded-full border-2 border-black shadow-[4px_4px_0px_#666] hover:shadow-none hover:translate-x-1 hover:translate-y-1 disabled:opacity-40 transition-all"
         >
-          {saving ? 'Saving...' : 'Confirm'}
+          {saving ? 'Saving...' : 'Confirm →'}
         </button>
       </div>
     </main>

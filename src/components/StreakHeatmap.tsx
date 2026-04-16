@@ -27,18 +27,13 @@ export default function StreakHeatmap({ logs }: Props) {
   const router = useRouter()
   const days = getLast84Days()
 
-  const loggedDays = new Set(
-    logs.map((l) => toETDateKey(new Date(l.logged_at)))
-  )
+  const loggedDays = new Set(logs.map((l) => toETDateKey(new Date(l.logged_at))))
 
-  // Group into weeks (columns of 7)
   const weeks: Date[][] = []
   for (let i = 0; i < days.length; i += 7) {
     weeks.push(days.slice(i, i + 7))
   }
 
-  // Find which week column each month label should appear above
-  // A month label appears on the first week that contains the 1st of that month
   const monthLabels: (string | null)[] = weeks.map((week) => {
     const firstOfMonth = week.find((d) => d.getDate() === 1)
     return firstOfMonth ? MONTHS[firstOfMonth.getMonth()] : null
@@ -46,20 +41,18 @@ export default function StreakHeatmap({ logs }: Props) {
 
   return (
     <div className="flex flex-col gap-1">
-      {/* Month labels row */}
+      {/* Month labels */}
       <div className="flex gap-1">
         {weeks.map((_, wi) => (
           <div key={wi} className="w-4 text-center">
             {monthLabels[wi] && (
-              <span className="text-[9px] text-stone-400 leading-none">
-                {monthLabels[wi]}
-              </span>
+              <span className="text-[9px] text-gray-400 leading-none">{monthLabels[wi]}</span>
             )}
           </div>
         ))}
       </div>
 
-      {/* Heatmap grid — rotate: render by row (day of week) across all weeks */}
+      {/* Grid */}
       {Array.from({ length: 7 }).map((_, dayIndex) => (
         <div key={dayIndex} className="flex gap-1">
           {weeks.map((week, wi) => {
@@ -72,12 +65,14 @@ export default function StreakHeatmap({ logs }: Props) {
               <button
                 key={key}
                 onClick={() => router.push(`/day/${key}`)}
-                title={new Date(`${key}T12:00:00`).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
-                className={`w-4 h-4 rounded-sm transition-colors ${
+                title={new Date(`${key}T12:00:00`).toLocaleDateString('en-US', {
+                  weekday: 'short', month: 'short', day: 'numeric',
+                })}
+                className={`w-4 h-4 rounded-sm border transition-all ${
                   hasLog
-                    ? 'bg-green-500'
-                    : 'bg-stone-200 dark:bg-stone-700'
-                } ${isToday ? 'ring-2 ring-green-400 ring-offset-1' : ''}`}
+                    ? 'bg-black border-black'
+                    : 'bg-white border-gray-300 hover:border-black'
+                } ${isToday ? 'ring-2 ring-black ring-offset-1' : ''}`}
               />
             )
           })}
