@@ -139,7 +139,7 @@ export default function LogActions({ log, collection, date }: Props) {
             {GRAM_PRESETS.map((g) => (
               <button
                 key={g}
-                onClick={() => { setGrams(g); setUseCustom(false); setCustomGrams(String(g)) }}
+                onClick={() => { setGrams(g); setUseCustom(false); setCustomGrams('') }}
                 className={`flex-1 py-1 text-sm rounded-full border-2 border-black font-bold transition-all ${
                   !useCustom && grams === g
                     ? 'bg-black text-white shadow-none'
@@ -157,9 +157,9 @@ export default function LogActions({ log, collection, date }: Props) {
               placeholder="other"
               step="0.5"
               min="0.5"
-              className={`flex-1 py-1 text-sm text-center rounded-full border-2 border-black outline-none transition-all font-bold ${
+              className={`flex-1 py-1 text-sm text-center rounded-full border-2 border-black font-bold outline-none transition-all ${
                 useCustom
-                  ? 'bg-black text-white shadow-none placeholder:text-gray-400'
+                  ? 'bg-black text-white shadow-none'
                   : 'shadow-[2px_2px_0px_#1a1008] placeholder:text-gray-400'
               }`}
             />

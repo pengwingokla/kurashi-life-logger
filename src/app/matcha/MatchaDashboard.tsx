@@ -194,11 +194,11 @@ export default function MatchaDashboard({ logs, collection: initialCollection }:
           </div>
         )}
 
-        <div className="flex gap-1.5">
+        <div className="flex gap-1.5 items-center">
           {GRAM_PRESETS.map((g) => (
             <button
               key={g}
-              onClick={() => { setGrams(g); setUseCustom(false) }}
+              onClick={() => { setGrams(g); setUseCustom(false); setCustomGrams('') }}
               className={`flex-1 py-1 text-sm rounded-full border-2 border-black font-bold transition-all ${
                 !useCustom && grams === g
                   ? 'bg-black text-white shadow-none'
@@ -208,30 +208,21 @@ export default function MatchaDashboard({ logs, collection: initialCollection }:
               {g}g
             </button>
           ))}
-          <button
-            onClick={() => setUseCustom(true)}
-            className={`flex-1 py-1 text-sm rounded-full border-2 border-black font-bold transition-all ${
-              useCustom
-                ? 'bg-black text-white shadow-none'
-                : 'shadow-[2px_2px_0px_#1a1008] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5'
-            }`}
-          >
-            Other
-          </button>
-        </div>
-
-        {useCustom && (
           <input
             type="number"
-            value={customGrams}
-            onChange={(e) => setCustomGrams(e.target.value)}
-            placeholder="e.g. 2.5"
+            value={useCustom ? customGrams : ''}
+            onChange={(e) => { setCustomGrams(e.target.value); setUseCustom(true) }}
+            onFocus={() => setUseCustom(true)}
+            placeholder="other"
             step="0.5"
             min="0.5"
-            autoFocus
-            className="border-2 border-black rounded-xl px-3 py-1.5 text-sm outline-none focus:shadow-[2px_2px_0px_#000]"
+            className={`flex-1 py-1 text-sm text-center rounded-full border-2 border-black font-bold outline-none transition-all ${
+              useCustom
+                ? 'bg-black text-white shadow-none'
+                : 'shadow-[2px_2px_0px_#1a1008] placeholder:text-gray-400'
+            }`}
           />
-        )}
+        </div>
 
         {error && <p className="text-red-500 text-sm">{error}</p>}
 
