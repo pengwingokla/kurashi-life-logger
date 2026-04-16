@@ -45,7 +45,25 @@ Respond with JSON only, no explanation:
   const raw = (message.content[0] as { type: string; text: string }).text
   try {
     const parsed = JSON.parse(raw)
-    return NextResponse.json(parsed)
+
+    // Auto-log after parsing
+    const { data: log, error } = await supabase
+      .from('matcha_logs')
+      .insert({
+        matcha_id: parsed.matcha_id ?? null,
+        grams: parsed.grams,
+        notes: parsed.notes ?? null,
+        logged_at: parsed.logged_at ?? new Date().toISOString(),
+      })
+      .select('*, matcha_collection(name)')
+      .single()
+
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+    return NextResponse.json({
+      message: `Logged ${log.grams}g of ${log.matcha_collection?.name ?? parsed.matcha_name ?? 'matcha'}`,
+      log,
+    })
   } catch {
     return NextResponse.json({ error: 'Failed to parse AI response', raw }, { status: 500 })
   }

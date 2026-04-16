@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import StreakHeatmap from '@/components/StreakHeatmap'
 import { MatchaLog } from '@/lib/supabase'
+import { toETDateKey, todayET, formatTimeET } from '@/lib/time'
 
 async function getLogs(): Promise<MatchaLog[]> {
   const from = new Date()
@@ -17,15 +18,13 @@ async function getLogs(): Promise<MatchaLog[]> {
 }
 
 function calcStreak(logs: MatchaLog[]): number {
-  const loggedDays = new Set(
-    logs.map((l) => new Date(l.logged_at).toISOString().split('T')[0])
-  )
+  const loggedDays = new Set(logs.map((l) => toETDateKey(new Date(l.logged_at))))
   let streak = 0
   const today = new Date()
   for (let i = 0; i < 84; i++) {
     const d = new Date(today)
     d.setDate(d.getDate() - i)
-    const key = d.toISOString().split('T')[0]
+    const key = toETDateKey(d)
     if (loggedDays.has(key)) streak++
     else break
   }
@@ -33,10 +32,8 @@ function calcStreak(logs: MatchaLog[]): number {
 }
 
 function getTodayLogs(logs: MatchaLog[]): MatchaLog[] {
-  const today = new Date().toISOString().split('T')[0]
-  return logs.filter(
-    (l) => new Date(l.logged_at).toISOString().split('T')[0] === today
-  )
+  const today = todayET()
+  return logs.filter((l) => toETDateKey(new Date(l.logged_at)) === today)
 }
 
 export default async function Home() {
@@ -114,12 +111,7 @@ export default async function Home() {
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-semibold">{log.grams}g</p>
-                  <p className="text-xs text-stone-400">
-                    {new Date(log.logged_at).toLocaleTimeString([], {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </p>
+                  <p className="text-xs text-stone-400">{formatTimeET(log.logged_at)}</p>
                 </div>
               </div>
             ))}
