@@ -48,11 +48,11 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
             <div className="grid grid-cols-2 gap-4">
               <div className="washi-card p-4">
                 <p className="t-label">Cups</p>
-                <p className="text-4xl font-bold mt-1">{logs.length}</p>
+                <p className="t-stat mt-1">{logs.length}</p>
               </div>
               <div className="washi-card p-4">
                 <p className="t-label">Total</p>
-                <p className="text-4xl font-bold mt-1">{totalGrams}g</p>
+                <p className="t-stat mt-1">{totalGrams}g</p>
               </div>
             </div>
 

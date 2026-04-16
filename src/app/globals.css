@@ -38,6 +38,13 @@ body {
   color: #9ca3af;       /* gray-400 */
 }
 
+/* Large display number (stat cards) */
+.t-stat {
+  font-size: 2.5rem;    /* 40px */
+  font-weight: 700;
+  line-height: 1;
+}
+
 /* Secondary / supporting body copy */
 .t-body {
   font-size: 0.8125rem; /* 13px */

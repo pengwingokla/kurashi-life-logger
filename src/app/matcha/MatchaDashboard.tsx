@@ -81,21 +81,17 @@ export default function MatchaDashboard({ logs, collection }: Props) {
       <div className="grid grid-cols-2 gap-4">
         <div className="washi-card p-4">
           <p className="t-label">Today</p>
-          <p className="text-4xl font-bold mt-1">
+          <p className="t-stat mt-1">
             {todayLogs.length}
-            <span className="text-base font-normal text-gray-400 ml-1">
-              {todayLogs.length === 1 ? 'cup' : 'cups'}
-            </span>
+            <span className="t-body ml-1">{todayLogs.length === 1 ? 'cup' : 'cups'}</span>
           </p>
           {todayGrams > 0 && <p className="t-body mt-1">{todayGrams}g total</p>}
         </div>
         <div className="washi-card p-4">
           <p className="t-label">Streak</p>
-          <p className="text-4xl font-bold mt-1">
+          <p className="t-stat mt-1">
             {streak}
-            <span className="text-base font-normal text-gray-400 ml-1">
-              {streak === 1 ? 'day' : 'days'}
-            </span>
+            <span className="t-body ml-1">{streak === 1 ? 'day' : 'days'}</span>
           </p>
         </div>
       </div>
