@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# kurashi 暮らし
 
-## Getting Started
+A quiet personal dashboard for logging the small things that make up your day: what you drank, how you felt, what you did. Not a productivity app. More like a gentle record of your daily life.
 
-First, run the development server:
+> *kurashi (暮らし)* is the Japanese word for daily life, livelihood, the way you spend your days.
+
+· · ·
+
+## what it does
+
+Kurashi is a collection of small trackers, each focused on one part of your routine. Low friction to log, meaningful to look back on.
+
+### 🍵 matcha tracker
+Log your matcha by type, brand, and grams. See your streak, today's total, and a 12-week heatmap of your habit. Pair it with an iOS Shortcut for one-tap logging from your home screen.
+
+More modules coming soon.
+
+· · ·
+
+## tech stack
+
+- **Next.js**: app router, server components
+- **Supabase**: database and auth
+- **Tailwind CSS**: styling
+- **TypeScript**: throughout
+
+· · ·
+
+## getting started
+
+1. Clone the repo and install dependencies:
+
+```bash
+npm install
+```
+
+2. Set up your environment variables. You'll need a Supabase project:
+
+```bash
+cp .env.example .env.local
+```
+
+```
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+```
+
+3. Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to see it.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+· · ·
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ios shortcut
 
-## Learn More
+Each tracker supports a webhook endpoint so you can log from your iPhone without opening the app. Setup instructions are in the Settings page once you're running.
 
-To learn more about Next.js, take a look at the following resources:
+· · ·
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+*built for personal use, with care.*
