@@ -6,6 +6,11 @@ M1 endpoints:
   GET  /jobs          — list stored jobs (unseen first)
   GET  /profile       — read resume profile
   POST /setup         — seed resume profile (idempotent)
+
+M2 endpoints:
+  POST /digest        — trigger digest run: score unseen jobs via Claude, store results
+  GET  /digest        — fetch latest digest with scored jobs
+  POST /chat          — send a conversational message to the job agent
 """
 
 import asyncio
@@ -15,6 +20,7 @@ from contextlib import asynccontextmanager
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from supabase import create_client, Client
 
 load_dotenv()
@@ -127,3 +133,74 @@ def get_profile():
     if not profile:
         raise HTTPException(status_code=404, detail="Profile not found — run POST /setup first")
     return profile
+
+
+# ---------------------------------------------------------------------------
+# M2 routes
+# ---------------------------------------------------------------------------
+
+@app.post("/digest")
+async def run_digest():
+    """
+    Trigger a digest run:
+    1. Pull unseen jobs from Supabase
+    2. Score each job via Claude (fit score, matched skills, gaps)
+    3. Store a digest row + digest_jobs rows in Supabase
+    4. Mark jobs as seen
+
+    M2 implementation: agent/scorer.py (see #15)
+    """
+    raise HTTPException(status_code=501, detail="Not implemented — coming in M2 #15")
+
+
+@app.get("/digest")
+def get_digest(limit: int = 20):
+    """
+    Fetch the latest digest and its scored jobs.
+    Returns the most recent digest row joined with digest_jobs + job metadata.
+    """
+    digest_row = (
+        db.table("digests")
+        .select("id, created_at, market_summary")
+        .order("created_at", desc=True)
+        .limit(1)
+        .execute()
+    )
+    if not digest_row.data:
+        raise HTTPException(status_code=404, detail="No digest found — run POST /digest first")
+
+    digest = digest_row.data[0]
+    scored_jobs = (
+        db.table("digest_jobs")
+        .select(
+            "fit_score, matched_skills, gaps, notes, "
+            "jobs(id, title, company, location, is_remote, url, salary_range)"
+        )
+        .eq("digest_id", digest["id"])
+        .order("fit_score", desc=True)
+        .limit(limit)
+        .execute()
+    )
+
+    return {
+        "digest_id": digest["id"],
+        "created_at": digest["created_at"],
+        "market_summary": digest["market_summary"],
+        "jobs": scored_jobs.data,
+    }
+
+
+class ChatMessage(BaseModel):
+    message: str
+    history: list[dict] = []
+
+
+@app.post("/chat")
+async def chat(body: ChatMessage):
+    """
+    Send a conversational message to the job agent.
+    Maintains history across turns; agent has access to resume + digests.
+
+    M4 implementation (see #18) — stub for route skeleton (#13).
+    """
+    raise HTTPException(status_code=501, detail="Not implemented — coming in M4 #18")
