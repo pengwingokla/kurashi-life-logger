@@ -7,6 +7,7 @@ import pytest
 from unittest.mock import MagicMock, patch
 
 from agent.prompt import build_system_prompt, _format_profile, _format_past_digests
+from tests.conftest import chain
 
 
 SAMPLE_PROFILE = {
@@ -83,29 +84,11 @@ class TestFormatPastDigests:
 class TestBuildSystemPrompt:
     def _make_db(self, profile=None, digests=None, seen_count=0):
         db = MagicMock()
-
-        # resume_profile query (via get_profile inside build_system_prompt)
-        profile_chain = MagicMock()
-        profile_chain.execute.return_value.data = profile
-
-        # digests query
-        digest_chain = MagicMock()
-        digest_chain.execute.return_value.data = digests or []
-
-        # jobs seen count
-        count_chain = MagicMock()
-        count_chain.execute.return_value.count = seen_count
-
-        def table_side_effect(name):
-            if name == "resume_profile":
-                return profile_chain
-            if name == "digests":
-                return digest_chain
-            if name == "jobs":
-                return count_chain
-            return MagicMock()
-
-        db.table.side_effect = table_side_effect
+        db.table.side_effect = lambda name: {
+            "resume_profile": chain(data=[profile] if profile else []),
+            "digests":        chain(data=digests or []),
+            "jobs":           chain(count=seen_count),
+        }.get(name, MagicMock())
         return db
 
     def test_prompt_contains_profile_info(self):

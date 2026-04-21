@@ -5,8 +5,10 @@ Tests for #15 — per-job fit scoring and gap analysis:
 """
 
 import json
+import os
 import pytest
 from unittest.mock import MagicMock, patch, call
+from tests.conftest import chain
 
 
 SAMPLE_JOB = {
@@ -113,39 +115,23 @@ class TestScoreJob:
 
 class TestRunDigest:
     def _make_db(self, unseen_jobs=None, digest_id="digest-1"):
+        jobs_chain   = chain(data=unseen_jobs or [])
+        digest_chain = chain(data=[{"id": digest_id}])
+        dj_chain     = chain(data=[{}])
+
         db = MagicMock()
-
-        # jobs query (unseen)
-        jobs_chain = MagicMock()
-        jobs_chain.execute.return_value.data = unseen_jobs or []
-
-        # digests insert
-        digest_chain = MagicMock()
-        digest_chain.execute.return_value.data = [{"id": digest_id}]
-
-        # digest_jobs insert
-        dj_chain = MagicMock()
-        dj_chain.execute.return_value.data = [{}]
-
-        # jobs update (mark seen)
-        update_chain = MagicMock()
-
-        def table_side_effect(name):
-            if name == "jobs":
-                return jobs_chain
-            if name == "digests":
-                return digest_chain
-            if name == "digest_jobs":
-                return dj_chain
-            return MagicMock()
-
-        db.table.side_effect = table_side_effect
+        db.table.side_effect = lambda name: {
+            "jobs":        jobs_chain,
+            "digests":     digest_chain,
+            "digest_jobs": dj_chain,
+        }.get(name, MagicMock())
         return db, jobs_chain, digest_chain, dj_chain
 
     def test_returns_early_when_no_unseen_jobs(self):
         from agent.scorer import run_digest
         db, *_ = self._make_db(unseen_jobs=[])
-        result = run_digest(db)
+        with patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test-key"}):
+            result = run_digest(db)
         assert result["unseen_jobs"] == 0
         assert result["digest_id"] is None
 
@@ -157,9 +143,10 @@ class TestRunDigest:
         ]
         db, *_ = self._make_db(unseen_jobs=jobs)
 
-        with patch("agent.scorer.build_system_prompt", return_value=SYSTEM_PROMPT), \
+        with patch("agent.prompt.build_system_prompt", return_value=SYSTEM_PROMPT), \
              patch("agent.scorer._score_job", return_value=SAMPLE_SCORE) as mock_score, \
-             patch("anthropic.Anthropic"):
+             patch("anthropic.Anthropic"), \
+             patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test-key"}):
             result = run_digest(db)
 
         assert mock_score.call_count == 3
@@ -169,9 +156,10 @@ class TestRunDigest:
         from agent.scorer import run_digest
         db, _, digest_chain, _ = self._make_db(unseen_jobs=[SAMPLE_JOB])
 
-        with patch("agent.scorer.build_system_prompt", return_value=SYSTEM_PROMPT), \
+        with patch("agent.prompt.build_system_prompt", return_value=SYSTEM_PROMPT), \
              patch("agent.scorer._score_job", return_value=SAMPLE_SCORE), \
-             patch("anthropic.Anthropic"):
+             patch("anthropic.Anthropic"), \
+             patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test-key"}):
             run_digest(db)
 
         digest_chain.insert.assert_called_once()
@@ -182,9 +170,10 @@ class TestRunDigest:
         from agent.scorer import run_digest
         db, _, _, dj_chain = self._make_db(unseen_jobs=[SAMPLE_JOB])
 
-        with patch("agent.scorer.build_system_prompt", return_value=SYSTEM_PROMPT), \
+        with patch("agent.prompt.build_system_prompt", return_value=SYSTEM_PROMPT), \
              patch("agent.scorer._score_job", return_value=SAMPLE_SCORE), \
-             patch("anthropic.Anthropic"):
+             patch("anthropic.Anthropic"), \
+             patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test-key"}):
             run_digest(db)
 
         dj_chain.insert.assert_called_once()
@@ -197,9 +186,10 @@ class TestRunDigest:
         from agent.scorer import run_digest
         db, jobs_chain, _, _ = self._make_db(unseen_jobs=[SAMPLE_JOB])
 
-        with patch("agent.scorer.build_system_prompt", return_value=SYSTEM_PROMPT), \
+        with patch("agent.prompt.build_system_prompt", return_value=SYSTEM_PROMPT), \
              patch("agent.scorer._score_job", return_value=SAMPLE_SCORE), \
-             patch("anthropic.Anthropic"):
+             patch("anthropic.Anthropic"), \
+             patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test-key"}):
             run_digest(db)
 
         jobs_chain.update.assert_called_with({"seen": True})
@@ -215,9 +205,10 @@ class TestRunDigest:
         def score_side_effect(job, *args, **kwargs):
             return SAMPLE_SCORE if job["id"] == "job-ok" else None
 
-        with patch("agent.scorer.build_system_prompt", return_value=SYSTEM_PROMPT), \
+        with patch("agent.prompt.build_system_prompt", return_value=SYSTEM_PROMPT), \
              patch("agent.scorer._score_job", side_effect=score_side_effect), \
-             patch("anthropic.Anthropic"):
+             patch("anthropic.Anthropic"), \
+             patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test-key"}):
             result = run_digest(db)
 
         assert result["scored"] == 1

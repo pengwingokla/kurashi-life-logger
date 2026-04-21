@@ -1,8 +1,10 @@
 """
 Shared fixtures for backend tests.
 
-db_mock: a MagicMock that mimics Supabase's fluent query builder chain.
-Use chain_mock() to set the data returned by .execute() on a specific chain.
+chain(data, count) — builds a fluent mock where every builder method
+(.select, .order, .limit, .eq, .in_, .update, .insert, .upsert, .single)
+returns self, so any Supabase query chain terminates at the same
+.execute() call regardless of depth.
 """
 
 import pytest
@@ -10,28 +12,27 @@ from unittest.mock import MagicMock, patch
 from fastapi.testclient import TestClient
 
 
-def make_db_mock():
+def chain(data=None, count=None):
     """
-    Build a MagicMock that satisfies Supabase's builder pattern:
-        db.table("x").select("...").eq(...).order(...).limit(...).execute()
-    Because MagicMock auto-creates child mocks, each step returns a fresh
-    MagicMock that also supports further chaining. Tests can configure the
-    .execute().data (or .count) on the specific chain they care about.
+    A MagicMock that satisfies Supabase's fluent builder pattern at any depth:
+        mock.select(...).order(...).limit(...).execute().data  → data
+        mock.select(...).eq(...).execute().count              → count
     """
-    return MagicMock()
-
-
-def execute_returning(data=None, count=None):
-    """Return a mock whose .execute() yields the given data/count."""
     m = MagicMock()
-    m.execute.return_value.data = data or []
-    m.execute.return_value.count = count
+    for method in ("select", "order", "limit", "eq", "in_", "update",
+                   "insert", "upsert", "single", "delete"):
+        getattr(m, method).return_value = m
+
+    exec_result = MagicMock()
+    exec_result.data = data if data is not None else []
+    exec_result.count = count
+    m.execute.return_value = exec_result
     return m
 
 
 @pytest.fixture
 def db():
-    return make_db_mock()
+    return MagicMock()
 
 
 @pytest.fixture

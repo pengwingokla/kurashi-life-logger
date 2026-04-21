@@ -5,6 +5,7 @@ Tests for #13 — M2 route skeleton:
 
 import pytest
 from unittest.mock import MagicMock, patch
+from tests.conftest import chain
 
 
 # ---------------------------------------------------------------------------
@@ -13,10 +14,8 @@ from unittest.mock import MagicMock, patch
 
 class TestGetDigest:
     def test_returns_404_when_no_digest(self, test_client, db):
-        db.table.return_value.select.return_value.order.return_value.limit.return_value.execute.return_value.data = []
-
+        db.table.return_value = chain(data=[])
         resp = test_client.get("/digest")
-
         assert resp.status_code == 404
         assert "No digest found" in resp.json()["detail"]
 
@@ -43,17 +42,9 @@ class TestGetDigest:
                 },
             }
         ]
-
-        # First .execute() call → digests table
-        digest_chain = MagicMock()
-        digest_chain.execute.return_value.data = [digest]
-
-        # Second .execute() call → digest_jobs table
-        jobs_chain = MagicMock()
-        jobs_chain.execute.return_value.data = scored_jobs
-
-        # Route hits db.table("digests") first, then db.table("digest_jobs")
-        db.table.side_effect = lambda name: digest_chain if name == "digests" else jobs_chain
+        db.table.side_effect = lambda name: (
+            chain(data=[digest]) if name == "digests" else chain(data=scored_jobs)
+        )
 
         resp = test_client.get("/digest")
 
@@ -65,19 +56,16 @@ class TestGetDigest:
         assert body["jobs"][0]["fit_score"] == 85
 
     def test_limit_param_forwarded(self, test_client, db):
-        digest_chain = MagicMock()
-        digest_chain.execute.return_value.data = [
+        digest_chain = chain(data=[
             {"id": "d1", "created_at": "2026-04-20T10:00:00Z", "market_summary": ""}
-        ]
-        jobs_chain = MagicMock()
-        jobs_chain.execute.return_value.data = []
+        ])
+        jobs_chain = chain(data=[])
         db.table.side_effect = lambda name: digest_chain if name == "digests" else jobs_chain
 
         resp = test_client.get("/digest?limit=5")
 
         assert resp.status_code == 200
-        # Confirm .limit(5) was called on the digest_jobs chain
-        jobs_chain.select.return_value.eq.return_value.order.return_value.limit.assert_called_with(5)
+        jobs_chain.limit.assert_called_with(5)
 
 
 # ---------------------------------------------------------------------------
