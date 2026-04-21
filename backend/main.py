@@ -147,10 +147,12 @@ async def run_digest():
     2. Score each job via Claude (fit score, matched skills, gaps)
     3. Store a digest row + digest_jobs rows in Supabase
     4. Mark jobs as seen
-
-    M2 implementation: agent/scorer.py (see #15)
     """
-    raise HTTPException(status_code=501, detail="Not implemented — coming in M2 #15")
+    from agent.scorer import run_digest as _run_digest
+    result = await asyncio.to_thread(_run_digest, db)
+    if result["unseen_jobs"] == 0:
+        return {"message": "No unseen jobs to score — run POST /jobs/fetch first", **result}
+    return result
 
 
 @app.get("/digest")
